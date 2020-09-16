@@ -13,6 +13,8 @@ defmodule Termpaint do
     "-#{String.duplicate("-", width)}-\n"
   end
 
-  defp render_row(width), do: "|#{String.duplicate(" ", width)}|\n"
+  defp render_row(width) do
+    "|#{String.duplicate(" ", width)}|\n"
+  end
 
 end
