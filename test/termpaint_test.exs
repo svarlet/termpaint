@@ -28,4 +28,15 @@ defmodule TermpaintTest do
       ----
       """
   end
+
+  test "create a 2x2 canvas" do
+    assert Termpaint.process_command("C 3 3") ==
+      """
+      -----
+      |   |
+      |   |
+      |   |
+      -----
+      """
+  end
 end
