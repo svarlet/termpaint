@@ -1,19 +1,20 @@
 defmodule Termpaint do
-  def process_command("C 1 " <> height) do
-    {row_count, _} = Integer.parse(height)
-    header = render_header()
-    body =
-      render_row()
-      |> List.duplicate(row_count)
-      |> Enum.join()
-    footer = render_footer()
+  def process_command("C" <> dimensions) do
+    %{"width" => width, "height" => height} = Regex.named_captures(~r/(?<width>\d+)\ +(?<height>\d+)/, dimensions)
+    {width, _} = Integer.parse(width)
+    {height, _} = Integer.parse(height)
+    header = render_header(width)
+    body = List.duplicate(render_row(width), height)
+    footer = render_footer(width)
     Enum.join([header, body, footer])
   end
 
-  defp render_header(), do: "---\n"
+  defp render_header(width) do
+    "-#{String.duplicate("-", width)}-\n"
+  end
 
-  defp render_footer(), do: "---\n"
+  defp render_footer(width), do: "-#{String.duplicate("-", width)}-\n"
 
-  defp render_row(), do: "| |\n"
+  defp render_row(width), do: "|#{String.duplicate(" ", width)}|\n"
 
 end
