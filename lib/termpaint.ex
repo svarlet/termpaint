@@ -1,9 +1,12 @@
 defmodule Termpaint do
-  def process_command("C 1 1") do
-    """
-    ---
-    | |
-    ---
-    """
+  def process_command("C 1 " <> height) do
+    {row_count, _} = Integer.parse(height)
+    header = "---\n"
+    body =
+      "| |\n"
+      |> List.duplicate(row_count)
+      |> Enum.join()
+    footer = "---\n"
+    Enum.join([header, body, footer])
   end
 end
