@@ -3,7 +3,7 @@ defmodule TermpaintTest do
 
   test "create a 1x1 canvas" do
     assert Termpaint.process_command("C 1 1") ==
-      ~S"""
+      """
       ---
       | |
       ---
