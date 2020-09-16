@@ -3,7 +3,7 @@ defmodule Termpaint do
     {row_count, _} = Integer.parse(height)
     header = render_header()
     body =
-      "| |\n"
+      render_row()
       |> List.duplicate(row_count)
       |> Enum.join()
     footer = render_footer()
@@ -13,5 +13,7 @@ defmodule Termpaint do
   defp render_header(), do: "---\n"
 
   defp render_footer(), do: "---\n"
+
+  defp render_row(), do: "| |\n"
 
 end
