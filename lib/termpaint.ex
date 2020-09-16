@@ -1,0 +1,2 @@
+defmodule Termpaint do
+end
