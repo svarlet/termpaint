@@ -6,10 +6,12 @@ defmodule Termpaint do
       "| |\n"
       |> List.duplicate(row_count)
       |> Enum.join()
-    footer = "---\n"
+    footer = render_footer()
     Enum.join([header, body, footer])
   end
 
   defp render_header(), do: "---\n"
+
+  defp render_footer(), do: "---\n"
 
 end
