@@ -1,14 +1,6 @@
 defmodule Termpaint do
   alias Termpaint.{Canvas, Renderer}
 
-  defmodule State do
-    defstruct canvas: nil
-  end
-
-  def new() do
-    %Termpaint.State{}
-  end
-
   def process_command(_state, "C" <> dimensions) do
     {width, height} = parse_dimensions(dimensions)
 

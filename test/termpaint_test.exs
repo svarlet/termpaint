@@ -2,7 +2,7 @@ defmodule TermpaintTest do
   use ExUnit.Case
 
   setup do
-    [state: Termpaint.new()]
+    [state: nil]
   end
 
   test "create a 1x1 canvas", context do
