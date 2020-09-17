@@ -1,5 +1,7 @@
 # Termpaint
 
+[![svarlet](https://circleci.com/gh/svarlet/termpaint.svg?style=shield)](https://app.circleci.com/pipelines/github/svarlet/termpaint)
+
 **TODO: Add description**
 
 ## Installation
