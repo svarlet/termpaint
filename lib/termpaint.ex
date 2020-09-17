@@ -3,7 +3,15 @@ defmodule Termpaint do
   @horizontal_fencing_char "|"
   @blank_char " "
 
-  def process_command("C" <> dimensions) do
+  defmodule State do
+    defstruct canvas: nil
+  end
+
+  def new() do
+    %Termpaint.State{}
+  end
+
+  def process_command(_state, "C" <> dimensions) do
     {width, height} = parse_dimensions(dimensions)
     header = render_vertical_fencing(width)
     body = List.duplicate(render_row(width), height)

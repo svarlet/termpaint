@@ -1,8 +1,12 @@
 defmodule TermpaintTest do
   use ExUnit.Case
 
-  test "create a 1x1 canvas" do
-    assert Termpaint.process_command("C 1 1") ==
+  setup do
+    [state: Termpaint.new()]
+  end
+
+  test "create a 1x1 canvas", context do
+    assert Termpaint.process_command(context.state, "C 1 1") ==
       """
       ---
       | |
@@ -10,8 +14,8 @@ defmodule TermpaintTest do
       """
   end
 
-  test "create a 1x2 canvas" do
-    assert Termpaint.process_command("C 1 2") ==
+  test "create a 1x2 canvas", context do
+    assert Termpaint.process_command(context.state, "C 1 2") ==
       """
       ---
       | |
@@ -20,8 +24,8 @@ defmodule TermpaintTest do
       """
   end
 
-  test "create a 2x1 canvas" do
-    assert Termpaint.process_command("C 2 1") ==
+  test "create a 2x1 canvas", context do
+    assert Termpaint.process_command(context.state, "C 2 1") ==
       """
       ----
       |  |
@@ -29,8 +33,8 @@ defmodule TermpaintTest do
       """
   end
 
-  test "create a 2x2 canvas" do
-    assert Termpaint.process_command("C 3 3") ==
+  test "create a 2x2 canvas", context do
+    assert Termpaint.process_command(context.state, "C 3 3") ==
       """
       -----
       |   |
