@@ -78,6 +78,19 @@ defmodule Termpaint.CanvasTest do
     }
   end
 
+  test "a width-less rectangle is a vertical line" do
+    canvas =
+      Canvas.new(3, 3)
+      |> Canvas.draw_rectangle(1, 1, 1, 3)
+
+    assert canvas.coords == %{
+      {1, 1} => "x",
+      {1, 2} => "x",
+      {1, 3} => "x"
+    }
+
+  end
+
   test "a rectangle with the size of the canvas" do
     canvas =
       Canvas.new(3, 3)
