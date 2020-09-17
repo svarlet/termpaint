@@ -27,17 +27,34 @@ defmodule Termpaint.Canvas do
   end
 
   def fill(canvas, x, y, ink) do
-    if canvas.coords[{x, y}] == nil do
-      all_coords =
-        for i <- 1..canvas.width, j <- 1..canvas.height do
-          {i, j}
-        end
+    fill_rec(canvas, ink, [{x, y}])
+  end
 
-      Enum.reduce(all_coords, canvas, fn coord, canvas ->
-        %__MODULE__{canvas | coords: Map.put_new(canvas.coords, coord, ink)}
-      end)
+  defp fill_rec(canvas, _ink, []) do
+    canvas
+  end
+
+  defp fill_rec(canvas, ink, [coord | candidates]) do
+    if canvas.coords[coord] == nil do
+      canvas = paint_at(canvas, coord, ink)
+      new_candidates = surrounding_coords_of(canvas, coord)
+      fill_rec(canvas, ink, Enum.concat(new_candidates, candidates))
     else
-      canvas
+      fill_rec(canvas, ink, candidates)
     end
+  end
+
+  defp paint_at(canvas, coord, ink) do
+    %__MODULE__{canvas | coords: Map.put_new(canvas.coords, coord, ink)}
+  end
+
+  defp surrounding_coords_of(canvas, {x, y}) do
+    [
+      {x - 1, y + 1}, {x, y + 1}, {x + 1, y + 1},
+      {x - 1, y}, {x + 1, y},
+      {x - 1, y - 1}, {x, y - 1}, {x + 1, y - 1}
+    ]
+    |> Enum.filter(fn {x, _y} -> x >= 1 and x <= canvas.width end)
+    |> Enum.filter(fn {_x, y} -> y >= 1 and y <= canvas.height end)
   end
 end
