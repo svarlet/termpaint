@@ -25,6 +25,14 @@ Notable errors that should be handled gracefully:
 - invalid type for a command argument
 - valid command argument but outside of canvas bounds
 
+I chose not to support a 0x0 canvas. I appreciate it's debatable: what's wrong with the following?
+```
+--
+||
+--
+```
+Nothing, but a user won't be able to do anything in it, so I exploited the lack of clarity of the code test with regard to this edge case.
+
 ## What could be better?
 
 While I'm happy with the core modules like Canvas and Renderer, there are a few things I wish I had done better.
