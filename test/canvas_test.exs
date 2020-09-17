@@ -91,7 +91,7 @@ defmodule Termpaint.CanvasTest do
 
   end
 
-  test "a rectangle with the size of the canvas" do
+  test "a 3x3 rectangle has a hole at {2,2}" do
     canvas =
       Canvas.new(3, 3)
       |> Canvas.draw_rectangle(1, 1, 3, 3)
