@@ -88,7 +88,6 @@ defmodule Termpaint.CanvasTest do
       {1, 2} => "x",
       {1, 3} => "x"
     }
-
   end
 
   test "a 3x3 rectangle has a hole at {2,2}" do
