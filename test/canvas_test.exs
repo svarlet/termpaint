@@ -55,4 +55,14 @@ defmodule Termpaint.CanvasTest do
       {3, 3} => "x",
     }
   end
+
+  test "a 1px rectangle" do
+    canvas =
+      Canvas.new(3, 3)
+      |> Canvas.draw_rectangle(1, 1, 1, 1)
+
+    assert canvas.coords == %{
+      {1, 1} => "x"
+    }
+  end
 end

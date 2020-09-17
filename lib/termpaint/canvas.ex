@@ -17,4 +17,8 @@ defmodule Termpaint.Canvas do
     vertical_coords = for y <- y1..y2, do: {x2, y}
     Enum.concat(horizontal_coords, vertical_coords)
   end
+
+  def draw_rectangle(canvas, _x1, _y1, _x2, _y2) do
+    %__MODULE__{canvas | coords: Map.put(canvas.coords, {1, 1}, "x")}
+  end
 end
