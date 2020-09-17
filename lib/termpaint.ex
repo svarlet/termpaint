@@ -7,6 +7,14 @@ defmodule Termpaint do
     defstruct canvas: nil
   end
 
+  defmodule Canvas do
+    defstruct width: 0, height: 0
+
+    def new(width, height) do
+      %__MODULE__{width: 1, height: 1}
+    end
+  end
+
   def new() do
     %Termpaint.State{}
   end
