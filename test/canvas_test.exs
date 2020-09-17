@@ -90,6 +90,20 @@ defmodule Termpaint.CanvasTest do
     }
   end
 
+  test "a 2x2 rectangle has no hole in the middle" do
+    canvas =
+      Canvas.new(3, 3)
+      |> Canvas.draw_rectangle(2, 2, 3, 3)
+
+    assert canvas.coords == %{
+      {2, 2} => "x",
+      {2, 3} => "x",
+      {3, 2} => "x",
+      {3, 3} => "x"
+    }
+
+  end
+
   test "a 3x3 rectangle has a hole at {2,2}" do
     canvas =
       Canvas.new(3, 3)
