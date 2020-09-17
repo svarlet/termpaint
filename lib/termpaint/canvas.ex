@@ -5,7 +5,7 @@ defmodule Termpaint.Canvas do
     %__MODULE__{width: width, height: height}
   end
 
-  def draw_line(canvas, {x1, y1, x2, y2}) do
+  def draw_line(canvas, x1, y1, x2, y2) do
     coords_between({x1, y1}, {x2, y2})
     |> Enum.reduce(canvas, fn coord, canvas ->
       %__MODULE__{canvas | coords: Map.put(canvas.coords, coord, "x")}

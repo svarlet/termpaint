@@ -14,14 +14,14 @@ defmodule Termpaint.CanvasTest do
   test "a (1, 1) to (1, 1) line" do
     canvas =
       Canvas.new(1, 1)
-      |> Canvas.draw_line({1, 1, 1, 1})
+      |> Canvas.draw_line(1, 1, 1, 1)
     assert canvas.coords == %{{1, 1} => "x"}
   end
 
   test "a horizontal line" do
     canvas =
       Canvas.new(3, 3)
-      |> Canvas.draw_line({1, 1, 3, 1})
+      |> Canvas.draw_line(1, 1, 3, 1)
 
     assert canvas.coords == %{
       {1, 1} => "x",
@@ -33,7 +33,7 @@ defmodule Termpaint.CanvasTest do
   test "a vertical line" do
     canvas =
       Canvas.new(3, 3)
-      |> Canvas.draw_line({1, 1, 1, 3})
+      |> Canvas.draw_line(1, 1, 1, 3)
 
     assert canvas.coords == %{
       {1, 1} => "x",
@@ -45,7 +45,7 @@ defmodule Termpaint.CanvasTest do
   test "an oblique line" do
     canvas =
       Canvas.new(3, 3)
-      |> Canvas.draw_line({1, 1, 3, 3})
+      |> Canvas.draw_line(1, 1, 3, 3)
 
     assert canvas.coords == %{
       {1, 1} => "x",
