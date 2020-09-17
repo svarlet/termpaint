@@ -5,7 +5,14 @@ defmodule Termpaint.Renderer do
 
   def render_canvas(canvas) do
     header = render_vertical_fencing(canvas.width)
-    body = List.duplicate(render_row(canvas.width), canvas.height)
+    body =
+      for y <- 1..canvas.height do
+        row =
+          for x <- 1..canvas.width do
+            canvas.coords[{x, y}] || @blank_char
+          end
+        render_row(row)
+      end
     footer = render_vertical_fencing(canvas.width)
     Enum.join([header, body, footer])
   end
@@ -17,9 +24,9 @@ defmodule Termpaint.Renderer do
     |> newline()
   end
 
-  defp render_row(width) do
-    @blank_char
-    |> String.duplicate(width)
+  defp render_row(values) do
+    values
+    |> Enum.join()
     |> surround(@horizontal_fencing_char)
     |> newline()
   end

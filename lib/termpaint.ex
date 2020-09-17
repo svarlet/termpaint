@@ -4,8 +4,40 @@ defmodule Termpaint do
   def process_command(_state, "C" <> dimensions) do
     {width, height} = parse_dimensions(dimensions)
 
-    Canvas.new(width, height)
+    canvas = Canvas.new(width, height)
+
+    canvas
     |> Renderer.render_canvas()
+    |> IO.write()
+
+    canvas
+  end
+
+  def process_command(state, "L" <> vector) do
+    {x1, y1, x2, y2} = parse_vector(vector)
+
+    canvas = Canvas.draw_line(state, x1, y1, x2, y2)
+
+    canvas
+    |> Renderer.render_canvas()
+    |> IO.write()
+
+    canvas
+  end
+
+  defp parse_vector(text) do
+    %{"x1" => x1,
+      "y1" => y1,
+      "x2" => x2,
+      "y2" => y2} =
+        Regex.named_captures(~r/(?<x1>\d+)\ +(?<y1>\d+)\ +(?<x2>\d+)\ +(?<y2>\d+)/, text)
+
+    {x1, _} = Integer.parse(x1)
+    {y1, _} = Integer.parse(y1)
+    {x2, _} = Integer.parse(x2)
+    {y2, _} = Integer.parse(y2)
+
+    {x1, y1, x2, y2}
   end
 
   defp parse_dimensions(text) do
