@@ -21,11 +21,15 @@ defmodule Termpaint do
           Canvas.fill(state, x, y, ink)
       end
 
+    print_canvas(canvas)
+
+    canvas
+  end
+
+  defp print_canvas(canvas) do
     canvas
     |> Renderer.render_canvas()
     |> IO.write()
-
-    canvas
   end
 
   defp parse_fill_arguments(text) do
