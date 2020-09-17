@@ -126,4 +126,19 @@ defmodule Termpaint.CanvasTest do
              }
     end
   end
+
+  describe "bucket fill" do
+    test "given a blank canvas, fills the entire canvas" do
+      canvas =
+        Canvas.new(2, 2)
+        |> Canvas.fill(1, 2, ".")
+
+      assert canvas.coords == %{
+        {1, 1} => ".",
+        {2, 1} => ".",
+        {1, 2} => ".",
+        {2, 2} => "."
+      }
+    end
+  end
 end
