@@ -37,12 +37,31 @@ defmodule Termpaint do
     canvas
   end
 
+  def process_command(state, "B" <> fill_args) do
+    {x, y, ink} = parse_fill_arguments(fill_args)
+
+    canvas = Canvas.fill(state, x, y, ink)
+
+    canvas
+    |> Renderer.render_canvas()
+    |> IO.write()
+
+    canvas
+  end
+
+  defp parse_fill_arguments(text) do
+    %{"x" => x, "y" => y, "ink" => ink} =
+      Regex.named_captures(~r/(?<x>\d+)\ +(?<y>\d+)\ +(?<ink>.)/, text)
+
+    {x, _} = Integer.parse(x)
+    {y, _} = Integer.parse(y)
+
+    {x, y, ink}
+  end
+
   defp parse_vector(text) do
-    %{"x1" => x1,
-      "y1" => y1,
-      "x2" => x2,
-      "y2" => y2} =
-        Regex.named_captures(~r/(?<x1>\d+)\ +(?<y1>\d+)\ +(?<x2>\d+)\ +(?<y2>\d+)/, text)
+    %{"x1" => x1, "y1" => y1, "x2" => x2, "y2" => y2} =
+      Regex.named_captures(~r/(?<x1>\d+)\ +(?<y1>\d+)\ +(?<x2>\d+)\ +(?<y2>\d+)/, text)
 
     {x1, _} = Integer.parse(x1)
     {y1, _} = Integer.parse(y1)

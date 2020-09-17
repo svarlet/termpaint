@@ -46,4 +46,22 @@ defmodule TermpaintTest do
              -------
              """
   end
+
+  test "bucket fill a complex area with the $ symbol" do
+    state =
+      Canvas.new(5, 5)
+      |> Canvas.draw_rectangle(1, 1, 3, 3)
+      |> Canvas.draw_line(5, 5, 4, 5)
+
+    assert capture_io(fn -> Termpaint.process_command(state, "B 1 5 $") end) ==
+             """
+             -------
+             |xxx$$|
+             |x x$$|
+             |xxx$$|
+             |$$$$$|
+             |$$$xx|
+             -------
+             """
+  end
 end
