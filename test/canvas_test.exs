@@ -17,4 +17,16 @@ defmodule Termpaint.CanvasTest do
       |> Canvas.draw_line({1, 1, 1, 1})
     assert canvas.coords == %{{1, 1} => "x"}
   end
+
+  test "a horizontal line" do
+    canvas =
+      Canvas.new(3, 3)
+      |> Canvas.draw_line({1, 1, 3, 1})
+
+    assert canvas.coords == %{
+      {1, 1} => "x",
+      {2, 1} => "x",
+      {3, 1} => "x"
+    }
+  end
 end
