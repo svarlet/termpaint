@@ -1,46 +1,25 @@
 defmodule Termpaint do
   alias Termpaint.{Canvas, Renderer}
 
-  def process_command(_state, "C" <> dimensions) do
-    {width, height} = parse_dimensions(dimensions)
+  def process_command(state, command) do
+    canvas =
+      case command do
+        "C" <> dimensions ->
+          {width, height} = parse_dimensions(dimensions)
+          Canvas.new(width, height)
 
-    canvas = Canvas.new(width, height)
+        "L" <> vector ->
+          {x1, y1, x2, y2} = parse_vector(vector)
+          Canvas.draw_line(state, x1, y1, x2, y2)
 
-    canvas
-    |> Renderer.render_canvas()
-    |> IO.write()
+        "R" <> vector ->
+          {x1, y1, x2, y2} = parse_vector(vector)
+          Canvas.draw_rectangle(state, x1, y1, x2, y2)
 
-    canvas
-  end
-
-  def process_command(state, "L" <> vector) do
-    {x1, y1, x2, y2} = parse_vector(vector)
-
-    canvas = Canvas.draw_line(state, x1, y1, x2, y2)
-
-    canvas
-    |> Renderer.render_canvas()
-    |> IO.write()
-
-    canvas
-  end
-
-  def process_command(state, "R" <> vector) do
-    {x1, y1, x2, y2} = parse_vector(vector)
-
-    canvas = Canvas.draw_rectangle(state, x1, y1, x2, y2)
-
-    canvas
-    |> Renderer.render_canvas()
-    |> IO.write()
-
-    canvas
-  end
-
-  def process_command(state, "B" <> fill_args) do
-    {x, y, ink} = parse_fill_arguments(fill_args)
-
-    canvas = Canvas.fill(state, x, y, ink)
+        "B" <> fill_args ->
+          {x, y, ink} = parse_fill_arguments(fill_args)
+          Canvas.fill(state, x, y, ink)
+      end
 
     canvas
     |> Renderer.render_canvas()
