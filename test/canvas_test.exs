@@ -29,4 +29,30 @@ defmodule Termpaint.CanvasTest do
       {3, 1} => "x"
     }
   end
+
+  test "a vertical line" do
+    canvas =
+      Canvas.new(3, 3)
+      |> Canvas.draw_line({1, 1, 1, 3})
+
+    assert canvas.coords == %{
+      {1, 1} => "x",
+      {1, 2} => "x",
+      {1, 3} => "x"
+    }
+  end
+
+  test "an oblique line" do
+    canvas =
+      Canvas.new(3, 3)
+      |> Canvas.draw_line({1, 1, 3, 3})
+
+    assert canvas.coords == %{
+      {1, 1} => "x",
+      {2, 1} => "x",
+      {3, 1} => "x",
+      {3, 2} => "x",
+      {3, 3} => "x",
+    }
+  end
 end
