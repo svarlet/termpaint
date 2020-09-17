@@ -20,7 +20,9 @@ defmodule Termpaint.Canvas do
     Enum.concat(horizontal_coords, vertical_coords)
   end
 
-  def draw_rectangle(canvas, _x1, _y1, _x2, _y2) do
-    %__MODULE__{canvas | coords: Map.put(canvas.coords, {1, 1}, @ink)}
+  def draw_rectangle(canvas, x1, y1, x2, y2) do
+    canvas
+    |> draw_line(x1, y1, x2, y2)
+    |> draw_line(x2, y2, x1, y1)
   end
 end
