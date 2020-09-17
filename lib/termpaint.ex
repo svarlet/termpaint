@@ -25,6 +25,18 @@ defmodule Termpaint do
     canvas
   end
 
+  def process_command(state, "R" <> vector) do
+    {x1, y1, x2, y2} = parse_vector(vector)
+
+    canvas = Canvas.draw_rectangle(state, x1, y1, x2, y2)
+
+    canvas
+    |> Renderer.render_canvas()
+    |> IO.write()
+
+    canvas
+  end
+
   defp parse_vector(text) do
     %{"x1" => x1,
       "y1" => y1,

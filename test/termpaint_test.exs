@@ -31,4 +31,19 @@ defmodule TermpaintTest do
              -----
              """
   end
+
+  test "draw a rectangle from (2,2) to (4,4) in a 5x5 canvas" do
+    state = Canvas.new(5, 5)
+
+    assert capture_io(fn -> Termpaint.process_command(state, "R 2 2 4 4") end) ==
+             """
+             -------
+             |     |
+             | xxx |
+             | x x |
+             | xxx |
+             |     |
+             -------
+             """
+  end
 end
