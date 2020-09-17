@@ -148,5 +148,19 @@ defmodule Termpaint.CanvasTest do
 
       assert canvas == Canvas.fill(canvas, 1, 2, ".")
     end
+
+    test "does not alter painted coordinates" do
+      canvas =
+        Canvas.new(2, 2)
+        |> Canvas.draw_line(1, 2, 1, 2)
+        |> Canvas.fill(1, 1, ".")
+
+      assert canvas.coords == %{
+        {1, 1} => ".",
+        {1, 2} => "x",
+        {2, 1} => ".",
+        {2, 2} => "."
+      }
+    end
   end
 end

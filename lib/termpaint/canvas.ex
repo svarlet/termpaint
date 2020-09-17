@@ -34,7 +34,7 @@ defmodule Termpaint.Canvas do
         end
 
       Enum.reduce(all_coords, canvas, fn coord, canvas ->
-        %__MODULE__{canvas | coords: Map.put(canvas.coords, coord, ink)}
+        %__MODULE__{canvas | coords: Map.put_new(canvas.coords, coord, ink)}
       end)
     else
       canvas
