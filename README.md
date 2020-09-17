@@ -41,3 +41,5 @@ First, the adapter layer, namely the termpaint module could be less coupled to t
 
 Second, and strongly related to the previous point, there are not enough tests testing the collaboration between the Termpoint module and its dependencies. This results in [a lot of contract tests and too few collaboration tests](https://blog.thecodewhisperer.com/permalink/integrated-tests-are-a-scam).
 
+Third, I appreciate the honourable-reviewer-of-the-test may not have Elixir installed on their computer and wish I had provided a docker file to help their inner artist reveal themselves.
+
