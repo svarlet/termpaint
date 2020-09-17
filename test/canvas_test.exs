@@ -140,5 +140,13 @@ defmodule Termpaint.CanvasTest do
         {2, 2} => "."
       }
     end
+
+    test "returns identical canvas if position is already painted" do
+      canvas =
+        Canvas.new(2, 2)
+        |> Canvas.draw_line(1, 2, 1, 2)
+
+      assert canvas == Canvas.fill(canvas, 1, 2, ".")
+    end
   end
 end

@@ -26,14 +26,18 @@ defmodule Termpaint.Canvas do
     |> draw_line(x2, y2, x1, y1)
   end
 
-  def fill(canvas, _x, _y, ink) do
-    all_coords =
-      for i <- 1..canvas.width, j <- 1..canvas.height do
-        {i, j}
-      end
+  def fill(canvas, x, y, ink) do
+    if canvas.coords[{x, y}] == nil do
+      all_coords =
+        for i <- 1..canvas.width, j <- 1..canvas.height do
+          {i, j}
+        end
 
-    Enum.reduce(all_coords, canvas, fn coord, canvas ->
-      %__MODULE__{canvas | coords: Map.put(canvas.coords, coord, ink)}
-    end)
+      Enum.reduce(all_coords, canvas, fn coord, canvas ->
+        %__MODULE__{canvas | coords: Map.put(canvas.coords, coord, ink)}
+      end)
+    else
+      canvas
+    end
   end
 end
