@@ -10,4 +10,11 @@ defmodule Termpaint.CanvasTest do
   test "a new 2x7 canvas" do
     assert %Canvas{width: 2, height: 7} == Canvas.new(2, 7)
   end
+
+  test "a (1, 1) to (1, 1) line" do
+    canvas =
+      Canvas.new(1, 1)
+      |> Canvas.draw_line({1, 1, 1, 1})
+    assert canvas.coords == %{{1, 1} => "x"}
+  end
 end
