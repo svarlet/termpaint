@@ -1,6 +1,18 @@
 defmodule Termpaint do
   alias Termpaint.{Canvas, Renderer}
 
+  def main(_args) do
+    read_command(nil)
+  end
+
+  def read_command(state \\ nil) do
+    command = IO.gets("enter command: ")
+
+    state
+    |> process_command(command)
+    |> read_command()
+  end
+
   def process_command(state, command) do
     canvas =
       case command do
@@ -19,6 +31,9 @@ defmodule Termpaint do
         "B" <> fill_args ->
           {x, y, ink} = parse_fill_arguments(fill_args)
           Canvas.fill(state, x, y, ink)
+
+        "Q\n" ->
+          System.halt(0)
       end
 
     print_canvas(canvas)
