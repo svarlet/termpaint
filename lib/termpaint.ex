@@ -4,15 +4,14 @@ defmodule Termpaint do
   import Termpaint.Parser
 
   def main(_args) do
-    read_command(nil)
+    Stream.unfold(nil, &run/1)
+    |> Stream.run()
   end
 
-  def read_command(state \\ nil) do
+  defp run(state) do
     command = IO.gets("enter command: ")
-
-    state
-    |> process_command(command)
-    |> read_command()
+    new_state = process_command(state, command)
+    {state, new_state}
   end
 
   def process_command(state, command) do
