@@ -3,12 +3,12 @@ defmodule TermpaintTest do
 
   import ExUnit.CaptureIO
 
-  alias Termpaint.Canvas
+  alias Termpaint.{Canvas, CommandInterpreter, Printer}
 
   test "create a 4x4 canvas" do
-    state = nil
+    state = CommandInterpreter.process_command(nil, "C 4 4")
 
-    assert capture_io(fn -> Termpaint.process_command(state, "C 4 4") end) ==
+    assert capture_io(fn -> Printer.print_canvas(state) end) ==
              """
              ------
              |    |
@@ -20,9 +20,11 @@ defmodule TermpaintTest do
   end
 
   test "draw a line from (1,1) to (3,3) in a 3x3 canvas" do
-    state = Canvas.new(3, 3)
+    state =
+      Canvas.new(3, 3)
+      |> CommandInterpreter.process_command("L 1 1 3 3")
 
-    assert capture_io(fn -> Termpaint.process_command(state, "L 1 1 3 3") end) ==
+    assert capture_io(fn -> Printer.print_canvas(state) end) ==
              """
              -----
              |xxx|
@@ -33,9 +35,11 @@ defmodule TermpaintTest do
   end
 
   test "draw a rectangle from (2,2) to (4,4) in a 5x5 canvas" do
-    state = Canvas.new(5, 5)
+    state =
+      Canvas.new(5, 5)
+      |> CommandInterpreter.process_command("R 2 2 4 4")
 
-    assert capture_io(fn -> Termpaint.process_command(state, "R 2 2 4 4") end) ==
+    assert capture_io(fn -> Printer.print_canvas(state) end) ==
              """
              -------
              |     |
@@ -52,8 +56,9 @@ defmodule TermpaintTest do
       Canvas.new(5, 5)
       |> Canvas.draw_rectangle(1, 1, 3, 3)
       |> Canvas.draw_line(5, 5, 4, 5)
+      |> CommandInterpreter.process_command("B 1 5 $")
 
-    assert capture_io(fn -> Termpaint.process_command(state, "B 1 5 $") end) ==
+    assert capture_io(fn -> Printer.print_canvas(state) end) ==
              """
              -------
              |xxx$$|
