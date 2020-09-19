@@ -7,7 +7,11 @@ defmodule Termpaint.CreateCanvasCommand do
 end
 
 defmodule Termpaint.DrawLineCommand do
-  defstruct from: {0, 0}, to: {0, 0}
+  defstruct from: {1, 1}, to: {1, 1}
+end
+
+defmodule Termpaint.DrawRectangleCommand do
+  defstruct from: {1, 1}, to: {1, 1}
 end
 
 defmodule Termpaint.Parser.Helpers do
@@ -42,17 +46,38 @@ defmodule Termpaint.Parser.Helpers do
     |> ignore(string(" "))
     |> concat(coords())
   end
+
+  def draw_rectangle_command() do
+    string("R")
+    |> ignore(string(" "))
+    |> concat(coords())
+    |> ignore(string(" "))
+    |> concat(coords())
+  end
 end
 
 defmodule Termpaint.Parser do
   import NimbleParsec
   import Termpaint.Parser.Helpers
 
-  defparsec(:to_supported_command, choice([canvas_command(), draw_line_command()]))
+  defparsec(
+    :to_supported_command,
+    choice([
+      canvas_command(),
+      draw_line_command(),
+      draw_rectangle_command()
+    ])
+  )
 end
 
 defmodule Termpaint.CommandInterpreter do
-  alias Termpaint.{UnsupportedCommandError, CreateCanvasCommand, DrawLineCommand, Parser}
+  alias Termpaint.{
+    UnsupportedCommandError,
+    CreateCanvasCommand,
+    DrawLineCommand,
+    DrawRectangleCommand,
+    Parser
+  }
 
   defp sanitize(text_command) do
     text_command
@@ -71,6 +96,9 @@ defmodule Termpaint.CommandInterpreter do
 
           ["L", x_from, y_from, x_to, y_to] ->
             %DrawLineCommand{from: {x_from, y_from}, to: {x_to, y_to}}
+
+          ["R", x_from, y_from, x_to, y_to] ->
+            %DrawRectangleCommand{from: {x_from, y_from}, to: {x_to, y_to}}
         end
 
       {:error, _, _, _, _, _} ->
@@ -90,7 +118,8 @@ defmodule Termpaint.CommandInterpreterTest do
     CommandInterpreter,
     UnsupportedCommandError,
     CreateCanvasCommand,
-    DrawLineCommand
+    DrawLineCommand,
+    DrawRectangleCommand
   }
 
   test "nil string" do
@@ -148,6 +177,18 @@ defmodule Termpaint.CommandInterpreterTest do
     rejects_text_command("L 1 2 k 4")
     rejects_text_command("L 1 2 3 -")
   end
+
+  test "draw a rectangle from (2,3) to (27,45)" do
+    assert %DrawRectangleCommand{from: {2, 3}, to: {27, 45}} ==
+             CommandInterpreter.parse("R 2 3 27 45")
+  end
+
+  # test "draw a rectangle with non numerical coordinates" do
+  #   rejects_text_command("R a 1 2 3")
+  #   rejects_text_command("R 1 b 2 3")
+  #   rejects_text_command("R 1 1 c 3")
+  #   rejects_text_command("R 1 1 2 d")
+  # end
 
   defp rejects_text_command(text_command) do
     assert %UnsupportedCommandError{} == CommandInterpreter.parse(text_command)
