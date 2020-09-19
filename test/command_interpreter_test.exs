@@ -41,6 +41,7 @@ defmodule Termpaint.Parser.Helpers do
     string("C")
     |> ignore(string(" "))
     |> concat(dimensions())
+    |> eos()
   end
 
   def draw_line_command() do
@@ -49,6 +50,7 @@ defmodule Termpaint.Parser.Helpers do
     |> concat(coords())
     |> ignore(string(" "))
     |> concat(coords())
+    |> eos()
   end
 
   def draw_rectangle_command() do
@@ -57,6 +59,7 @@ defmodule Termpaint.Parser.Helpers do
     |> concat(coords())
     |> ignore(string(" "))
     |> concat(coords())
+    |> eos()
   end
 
   def bucket_fill_command() do
@@ -216,6 +219,13 @@ defmodule Termpaint.CommandInterpreterTest do
   test "bucket fill's ink cannot be 2 characters or more" do
     rejects_text_command("B 1 18 yo")
     rejects_text_command("B 1 18 foo")
+  end
+
+  test "commands don't support extra arguments" do
+    rejects_text_command("C 1 2 extra")
+    rejects_text_command("L 1 18 2 3 extra")
+    rejects_text_command("R 3 4 19 2993 extra")
+    rejects_text_command("B 1 18 ? extra")
   end
 
   defp rejects_text_command(text_command) do
