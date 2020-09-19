@@ -102,15 +102,15 @@ defmodule Termpaint.CommandInterpreterTest do
   }
 
   test "nil string" do
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse(nil)
+    rejects_text_command nil
   end
 
   test "empty string" do
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("")
+    rejects_text_command ""
   end
 
   test "blank string" do
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("\t        \r \n  \t\t  ")
+    rejects_text_command "\t        \r \n  \t\t  "
   end
 
   test "create a 10x20 canvas" do
@@ -127,20 +127,20 @@ defmodule Termpaint.CommandInterpreterTest do
   end
 
   test "create a canvas when width or height is not a number" do
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("C a 10")
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("C 3 ?")
+    rejects_text_command "C a 10"
+    rejects_text_command "C 3 ?"
   end
 
   test "create a canvas when width or height is a negative integer" do
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("C -1 20")
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("C 10 -4")
+    rejects_text_command "C -1 20"
+    rejects_text_command "C 10 -4"
   end
 
   test "draw a line when either origin or destination coords have a negative position" do
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L -1 2 3 4")
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 -2 3 4")
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 2 -3 4")
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 2 3 -4")
+    rejects_text_command "L -1 2 3 4"
+    rejects_text_command "L 1 -2 3 4"
+    rejects_text_command "L 1 2 -3 4"
+    rejects_text_command "L 1 2 3 -4"
   end
 
   test "draw a line from (2,4) to (100, 5)" do
@@ -148,12 +148,17 @@ defmodule Termpaint.CommandInterpreterTest do
   end
 
   test "draw a line from coordinates not defined by nunbers" do
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L a 2 3 4")
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 ? 3 4")
+    rejects_text_command "L a 2 3 4"
+    rejects_text_command "L 1 ? 3 4"
   end
 
   test "draw a line to coordinates not defined by nunbers" do
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 2 k 4")
-    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 2 3 -")
+    rejects_text_command "L 1 2 k 4"
+    rejects_text_command "L 1 2 3 -"
+    rejects_text_command "L a a a a"
+  end
+
+  defp rejects_text_command(text_command) do
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse(text_command)
   end
 end
