@@ -42,7 +42,7 @@ defmodule Termpaint.CommandInterpreterTest do
     assert %UnsupportedCommandError{} == CommandInterpreter.parse("\t        \r \n  \t\t  ")
   end
 
-  test "create a canvas" do
+  test "create a 10x20 canvas" do
     assert %CreateCanvasCommand{width: 10, height: 20} == CommandInterpreter.parse("C 10 20")
   end
 
