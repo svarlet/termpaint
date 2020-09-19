@@ -94,4 +94,9 @@ defmodule Termpaint.CommandInterpreterTest do
     assert %UnsupportedCommandError{} == CommandInterpreter.parse("C a 10")
     assert %UnsupportedCommandError{} == CommandInterpreter.parse("C 3 ?")
   end
+
+  test "create a canvas when width or height is a negative integer" do
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("C -1 20")
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("C 10 -4")
+  end
 end
