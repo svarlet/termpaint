@@ -48,7 +48,6 @@ defmodule Termpaint.DrawLineCommand do
         Canvas.within?(canvas, from) -> %OutOfBoundsError{}
         Canvas.within?(canvas, to) -> %OutOfBoundsError{}
       end
-
     end
   end
 end
