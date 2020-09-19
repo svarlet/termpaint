@@ -39,6 +39,8 @@ defmodule Termpaint.DrawLineCommand do
   defstruct from: {1, 1}, to: {1, 1}
 
   defimpl Termpaint.CanvasTransformation do
+    @dot "x"
+
     def transform(_command, nil) do
       %NilCanvasError{}
     end
@@ -52,11 +54,11 @@ defmodule Termpaint.DrawLineCommand do
           {x_to, y_to} = to
           canvas =
             for x <- x_from..x_to, reduce: canvas do
-              canvas -> %Canvas{canvas | bitmap: Map.put(canvas.bitmap, {x, y_from}, "x")}
+              canvas -> %Canvas{canvas | bitmap: Map.put(canvas.bitmap, {x, y_from}, @dot)}
             end
 
           for y <- y_from..y_to, reduce: canvas do
-            canvas -> %Canvas{canvas | bitmap: Map.put(canvas.bitmap, {x_from, y}, "x")}
+            canvas -> %Canvas{canvas | bitmap: Map.put(canvas.bitmap, {x_from, y}, @dot)}
           end
       end
     end
