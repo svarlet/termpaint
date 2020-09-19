@@ -12,4 +12,9 @@ defmodule CanvasTransformationTest do
     command = %CreateCanvasCommand{width: 1, height: 1}
     assert %Canvas{width: 1, height: 1} == CanvasTransformation.transform(command, nil)
   end
+
+  test "given a nil canvas, creating a 10k x 10k canvas returns a 10k x 10k canvas" do
+    command = %CreateCanvasCommand{width: 10_000, height: 10_000}
+    assert %Canvas{width: 10_000, height: 10_000} == CanvasTransformation.transform(command, nil)
+  end
 end
