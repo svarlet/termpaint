@@ -100,5 +100,15 @@ defmodule CanvasTransformationTest do
         {3, 2} => "x"
       } == canvas.bitmap
     end
+
+    test "draw a vertical line", context do
+      a_vline_command = %DrawLineCommand{from: {2, 1}, to: {2, 3}}
+      canvas = CanvasTransformation.transform(a_vline_command, context.a_3x3_canvas)
+      assert %{
+        {2, 1} => "x",
+        {2, 2} => "x",
+        {2, 3} => "x"
+      } == canvas.bitmap
+    end
   end
 end

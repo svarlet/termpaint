@@ -48,10 +48,15 @@ defmodule Termpaint.DrawLineCommand do
         not Canvas.within?(canvas, from) -> %OutOfBoundsError{}
         not Canvas.within?(canvas, to) -> %OutOfBoundsError{}
         true ->
-          {x_from, y} = from
-          {x_to, _} = to
-          for x <- x_from..x_to, reduce: canvas do
-            canvas -> %Canvas{canvas | bitmap: Map.put(canvas.bitmap, {x, y}, "x")}
+          {x_from, y_from} = from
+          {x_to, y_to} = to
+          canvas =
+            for x <- x_from..x_to, reduce: canvas do
+              canvas -> %Canvas{canvas | bitmap: Map.put(canvas.bitmap, {x, y_from}, "x")}
+            end
+
+          for y <- y_from..y_to, reduce: canvas do
+            canvas -> %Canvas{canvas | bitmap: Map.put(canvas.bitmap, {x_from, y}, "x")}
           end
       end
     end
