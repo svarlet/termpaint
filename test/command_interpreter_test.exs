@@ -14,6 +14,10 @@ defmodule Termpaint.DrawRectangleCommand do
   defstruct from: {1, 1}, to: {1, 1}
 end
 
+defmodule Termpaint.BucketFillCommand do
+  defstruct position: {1, 1}, ink: "."
+end
+
 defmodule Termpaint.Parser.Helpers do
   import NimbleParsec
 
@@ -54,6 +58,14 @@ defmodule Termpaint.Parser.Helpers do
     |> ignore(string(" "))
     |> concat(coords())
   end
+
+  def bucket_fill_command() do
+    string("B")
+    |> ignore(string(" "))
+    |> concat(coords())
+    |> ignore(string(" "))
+    |> utf8_string([], 1)
+  end
 end
 
 defmodule Termpaint.Parser do
@@ -65,7 +77,8 @@ defmodule Termpaint.Parser do
     choice([
       canvas_command(),
       draw_line_command(),
-      draw_rectangle_command()
+      draw_rectangle_command(),
+      bucket_fill_command()
     ])
   )
 end
@@ -76,6 +89,7 @@ defmodule Termpaint.CommandInterpreter do
     CreateCanvasCommand,
     DrawLineCommand,
     DrawRectangleCommand,
+    BucketFillCommand,
     Parser
   }
 
@@ -99,6 +113,9 @@ defmodule Termpaint.CommandInterpreter do
 
           ["R", x_from, y_from, x_to, y_to] ->
             %DrawRectangleCommand{from: {x_from, y_from}, to: {x_to, y_to}}
+
+          ["B", x, y, ink] ->
+            %BucketFillCommand{position: {x, y}, ink: ink}
         end
 
       {:error, _, _, _, _, _} ->
@@ -119,7 +136,8 @@ defmodule Termpaint.CommandInterpreterTest do
     UnsupportedCommandError,
     CreateCanvasCommand,
     DrawLineCommand,
-    DrawRectangleCommand
+    DrawRectangleCommand,
+    BucketFillCommand
   }
 
   test "nil string" do
@@ -188,6 +206,10 @@ defmodule Termpaint.CommandInterpreterTest do
     rejects_text_command("R 1 b 2 3")
     rejects_text_command("R 1 1 c 3")
     rejects_text_command("R 1 1 2 d")
+  end
+
+  test "bucket fill requires 2 coords and 1 ascii character" do
+    assert %BucketFillCommand{position: {3, 4}, ink: "+"} == CommandInterpreter.parse("B 3 4 +")
   end
 
   defp rejects_text_command(text_command) do
