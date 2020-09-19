@@ -1,7 +1,14 @@
 defmodule CanvasTransformationTest do
   use ExUnit.Case, async: true
 
-  alias Termpaint.{CreateCanvasCommand, AbsurdCanvasSizeError, CanvasTransformation, Canvas}
+  alias Termpaint.{
+    CreateCanvasCommand,
+    AbsurdCanvasSizeError,
+    CanvasTransformation,
+    Canvas,
+    DrawLineCommand,
+    NilCanvasError
+  }
 
   describe "create a canvas" do
     test "creating a 0x0 canvas is an error" do
@@ -51,6 +58,14 @@ defmodule CanvasTransformationTest do
         |> CanvasTransformation.transform(nil)
 
       assert canvas.bitmap == %{}
+    end
+  end
+
+  describe "drawing a line" do
+    test "drawing a line before a canvas is created" do
+      assert %NilCanvasError{} ==
+               %DrawLineCommand{from: {1, 1}, to: {3, 2}}
+               |> CanvasTransformation.transform(nil)
     end
   end
 end

@@ -2,6 +2,10 @@ defmodule Termpaint.AbsurdCanvasSizeError do
   defexception ~w{message}a
 end
 
+defmodule Termpaint.NilCanvasError do
+  defexception ~w{message}a
+end
+
 defmodule Termpaint.CreateCanvasCommand do
   alias Termpaint.AbsurdCanvasSizeError
   alias Termpaint.Canvas
@@ -26,7 +30,16 @@ defmodule Termpaint.CreateCanvasCommand do
 end
 
 defmodule Termpaint.DrawLineCommand do
+  alias Termpaint.NilCanvasError
+  alias Termpaint.DrawLineCommand
+
   defstruct from: {1, 1}, to: {1, 1}
+
+  defimpl Termpaint.CanvasTransformation do
+    def transform(%DrawLineCommand{from: {1, 1}, to: {3, 2}}, nil) do
+      %NilCanvasError{}
+    end
+  end
 end
 
 defmodule Termpaint.DrawRectangleCommand do
