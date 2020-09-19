@@ -63,39 +63,37 @@ defmodule CanvasTransformationTest do
   end
 
   describe "drawing a line" do
+    setup do
+      [a_3x3_canvas: %Canvas{width: 3, height: 3}]
+    end
+
     test "drawing a line before a canvas is created" do
       assert %NilCanvasError{} ==
                %DrawLineCommand{from: {1, 1}, to: {3, 2}}
                |> CanvasTransformation.transform(nil)
     end
 
-    test "drawing a line from a position outside the canvas returns an error" do
-      a_3x3_canvas = %Canvas{width: 3, height: 3}
-
+    test "drawing a line from a position outside the canvas returns an error", context do
       assert %OutOfBoundsError{} ==
         %DrawLineCommand{from: {0, 0}, to: {2, 3}}
-        |> CanvasTransformation.transform(a_3x3_canvas)
+        |> CanvasTransformation.transform(context.a_3x3_canvas)
     end
 
-    test "drawing a line to a position outside the canvas returns an error" do
-      a_3x3_canvas = %Canvas{width: 3, height: 3}
-
+    test "drawing a line to a position outside the canvas returns an error", context do
       assert %OutOfBoundsError{} ==
         %DrawLineCommand{from: {1, 1}, to: {100, 100}}
-        |> CanvasTransformation.transform(a_3x3_canvas)
+        |> CanvasTransformation.transform(context.a_3x3_canvas)
     end
 
-    test "draw a 1px line" do
+    test "draw a 1px line", context do
       a_1px_line_command = %DrawLineCommand{from: {2, 3}, to: {2, 3}}
-      a_3x3_canvas = %Canvas{width: 3, height: 3}
-      canvas = CanvasTransformation.transform(a_1px_line_command, a_3x3_canvas)
+      canvas = CanvasTransformation.transform(a_1px_line_command, context.a_3x3_canvas)
       assert %{{2, 3} => "x"} == canvas.bitmap
     end
 
-    test "draw a horizontal line" do
-      a_3x3_canvas = %Canvas{width: 3, height: 3}
+    test "draw a horizontal line", context do
       a_hline_command = %DrawLineCommand{from: {1, 2}, to: {3, 2}}
-      canvas = CanvasTransformation.transform(a_hline_command, a_3x3_canvas)
+      canvas = CanvasTransformation.transform(a_hline_command, context.a_3x3_canvas)
       assert %{
         {1, 2} => "x",
         {2, 2} => "x",
