@@ -20,6 +20,7 @@ defmodule CanvasTransformationTest do
 
   test "given a preexising canvas, creating a canvas returns the new one" do
     command = %CreateCanvasCommand{width: 10_000, height: 10_000}
-    assert %Canvas{width: 10_000, height: 10_000} == CanvasTransformation.transform(command, %Canvas{width: 1, height: 1})
+    prior_canvas = %Canvas{width: 1, height: 1}
+    assert %Canvas{width: 10_000, height: 10_000} == CanvasTransformation.transform(command, prior_canvas)
   end
 end
