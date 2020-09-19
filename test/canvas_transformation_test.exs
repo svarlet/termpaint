@@ -76,5 +76,13 @@ defmodule CanvasTransformationTest do
         %DrawLineCommand{from: {0, 0}, to: {2, 3}}
         |> CanvasTransformation.transform(a_3x3_canvas)
     end
+
+    test "drawing a line to a position outside the canvas returns an error" do
+      a_3x3_canvas = %Canvas{width: 3, height: 3}
+
+      assert %OutOfBoundsError{} ==
+        %DrawLineCommand{from: {1, 1}, to: {100, 100}}
+        |> CanvasTransformation.transform(a_3x3_canvas)
+    end
   end
 end

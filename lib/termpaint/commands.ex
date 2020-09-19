@@ -43,10 +43,12 @@ defmodule Termpaint.DrawLineCommand do
       %NilCanvasError{}
     end
 
-    def transform(%DrawLineCommand{from: from}, canvas) do
-      unless Canvas.within?(canvas, from) do
-        %OutOfBoundsError{}
+    def transform(%DrawLineCommand{from: from, to: to}, canvas) do
+      cond do
+        Canvas.within?(canvas, from) -> %OutOfBoundsError{}
+        Canvas.within?(canvas, to) -> %OutOfBoundsError{}
       end
+
     end
   end
 end
