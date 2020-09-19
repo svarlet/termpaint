@@ -6,6 +6,10 @@ defmodule Termpaint.CreateCanvasCommand do
   defstruct width: 1, height: 1
 end
 
+defmodule Termpaint.DrawLineCommand do
+  defstruct from: {0, 0}, to: {0, 0}
+end
+
 defmodule Termpaint.Parser.Helpers do
   import NimbleParsec
 
@@ -14,6 +18,12 @@ defmodule Termpaint.Parser.Helpers do
   end
 
   def dimensions() do
+    positive_int()
+    |> ignore(string: " ")
+    |> concat(positive_int())
+  end
+
+  def coords() do
     positive_int()
     |> ignore(string: " ")
     |> concat(positive_int())
@@ -30,11 +40,19 @@ defmodule Termpaint.Parser do
     |> ignore(string(" "))
     |> concat(Helpers.dimensions())
 
+  draw_line_command =
+    string("L")
+    |> ignore(string(" "))
+    |> concat(Helpers.coords())
+    |> ignore(string(" "))
+    |> concat(Helpers.coords())
+
   defparsec(:canvas_command, canvas_command)
+  defparsec(:draw_line_command, draw_line_command)
 end
 
 defmodule Termpaint.CommandInterpreter do
-  alias Termpaint.{UnsupportedCommandError, CreateCanvasCommand, Parser}
+  alias Termpaint.{UnsupportedCommandError, CreateCanvasCommand, DrawLineCommand, Parser}
 
   defp sanitize(text_command) do
     text_command
@@ -46,16 +64,25 @@ defmodule Termpaint.CommandInterpreter do
     text_command = sanitize(string)
 
     case text_command do
-      "" -> %UnsupportedCommandError{}
+      "" ->
+        %UnsupportedCommandError{}
 
       "C" <> _args ->
         case Parser.canvas_command(text_command) do
-          {:ok, ["C", width, height], _, _, _, _} -> %CreateCanvasCommand{width: width, height: height}
-          _error -> %UnsupportedCommandError{}
+          {:ok, ["C", width, height], _, _, _, _} ->
+            %CreateCanvasCommand{width: width, height: height}
+
+          _error ->
+            %UnsupportedCommandError{}
         end
 
       "L" <> _args ->
-        %UnsupportedCommandError{}
+        case Parser.draw_line_command(text_command) do
+          {:ok, ["L", x_from, y_from, x_to, y_to], _, _, _, _} ->
+            %DrawLineCommand{from: {x_from, y_from}, to: {x_to, y_to}}
+          _error ->
+            %UnsupportedCommandError{}
+        end
     end
   end
 
@@ -67,7 +94,12 @@ end
 defmodule Termpaint.CommandInterpreterTest do
   use ExUnit.Case, async: true
 
-  alias Termpaint.{CommandInterpreter, UnsupportedCommandError, CreateCanvasCommand}
+  alias Termpaint.{
+    CommandInterpreter,
+    UnsupportedCommandError,
+    CreateCanvasCommand,
+    DrawLineCommand
+  }
 
   test "nil string" do
     assert %UnsupportedCommandError{} == CommandInterpreter.parse(nil)
@@ -109,5 +141,9 @@ defmodule Termpaint.CommandInterpreterTest do
     assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 -2 3 4")
     assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 2 -3 4")
     assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 2 3 -4")
+  end
+
+  test "draw a line from (2,4) to (100, 5)" do
+    assert %DrawLineCommand{from: {2, 4}, to: {100, 5}} == CommandInterpreter.parse("L 2 4 100 5")
   end
 end
