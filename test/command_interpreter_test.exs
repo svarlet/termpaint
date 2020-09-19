@@ -183,12 +183,12 @@ defmodule Termpaint.CommandInterpreterTest do
              CommandInterpreter.parse("R 2 3 27 45")
   end
 
-  # test "draw a rectangle with non numerical coordinates" do
-  #   rejects_text_command("R a 1 2 3")
-  #   rejects_text_command("R 1 b 2 3")
-  #   rejects_text_command("R 1 1 c 3")
-  #   rejects_text_command("R 1 1 2 d")
-  # end
+  test "draw a rectangle with non numerical coordinates" do
+    rejects_text_command("R a 1 2 3")
+    rejects_text_command("R 1 b 2 3")
+    rejects_text_command("R 1 1 c 3")
+    rejects_text_command("R 1 1 2 d")
+  end
 
   defp rejects_text_command(text_command) do
     assert %UnsupportedCommandError{} == CommandInterpreter.parse(text_command)
