@@ -7,7 +7,8 @@ defmodule CanvasTransformationTest do
     CanvasTransformation,
     Canvas,
     DrawLineCommand,
-    NilCanvasError
+    NilCanvasError,
+    OutOfBoundsError
   }
 
   describe "create a canvas" do
@@ -66,6 +67,14 @@ defmodule CanvasTransformationTest do
       assert %NilCanvasError{} ==
                %DrawLineCommand{from: {1, 1}, to: {3, 2}}
                |> CanvasTransformation.transform(nil)
+    end
+
+    test "drawing a line from a position outside the canvas returns an error" do
+      a_3x3_canvas = %Canvas{width: 3, height: 3}
+
+      assert %OutOfBoundsError{} ==
+        %DrawLineCommand{from: {0, 0}, to: {2, 3}}
+        |> CanvasTransformation.transform(a_3x3_canvas)
     end
   end
 end

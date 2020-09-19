@@ -6,6 +6,10 @@ defmodule Termpaint.NilCanvasError do
   defexception ~w{message}a
 end
 
+defmodule Termpaint.OutOfBoundsError do
+  defexception ~w{message}a
+end
+
 defmodule Termpaint.CreateCanvasCommand do
   alias Termpaint.AbsurdCanvasSizeError
   alias Termpaint.Canvas
@@ -30,14 +34,19 @@ defmodule Termpaint.CreateCanvasCommand do
 end
 
 defmodule Termpaint.DrawLineCommand do
-  alias Termpaint.NilCanvasError
-  alias Termpaint.DrawLineCommand
+  alias Termpaint.{NilCanvasError, DrawLineCommand, Canvas, OutOfBoundsError}
 
   defstruct from: {1, 1}, to: {1, 1}
 
   defimpl Termpaint.CanvasTransformation do
-    def transform(%DrawLineCommand{from: {1, 1}, to: {3, 2}}, nil) do
+    def transform(%DrawLineCommand{}, nil) do
       %NilCanvasError{}
+    end
+
+    def transform(%DrawLineCommand{from: {x, y}}, %Canvas{width: width, height: height}) do
+      unless x in 1..width and y in 1..height do
+        %OutOfBoundsError{}
+      end
     end
   end
 end
