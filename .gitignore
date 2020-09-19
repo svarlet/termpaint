@@ -24,7 +24,7 @@ termpaint-*.tar
 
 .vscode
 
-termpaint
+/termpaint
 
 **/.DS_Store
 
