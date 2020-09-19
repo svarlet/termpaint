@@ -8,6 +8,12 @@ defmodule CanvasTransformationTest do
     assert %AbsurdCanvasSizeError{} == CanvasTransformation.transform(command, nil)
   end
 
+  test "creating a 0x0 canvas from a previous canvas returns an error" do
+    command = %CreateCanvasCommand{width: 0, height: 0}
+    prior_canvas = %Canvas{width: 1, height: 1}
+    assert %AbsurdCanvasSizeError{} == CanvasTransformation.transform(command, prior_canvas)
+  end
+
   test "given a nil canvas, creating a 1x1 canvas returns a 1x1 canvas" do
     command = %CreateCanvasCommand{width: 1, height: 1}
     assert %Canvas{width: 1, height: 1} == CanvasTransformation.transform(command, nil)
