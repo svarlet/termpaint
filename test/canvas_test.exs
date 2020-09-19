@@ -23,5 +23,11 @@ defmodule CanvasTest do
       point = {1, 4}
       refute Canvas.within?(canvas, point)
     end
+
+    test "returns true when a point stands within the canvas" do
+      canvas = %Canvas{width: 10, height: 10}
+      point = {5, 5}
+      assert Canvas.within?(canvas, point)
+    end
   end
 end
