@@ -10,7 +10,11 @@ defmodule Termpaint.CommandInterpreter do
   alias Termpaint.{UnsupportedCommandError, CreateCanvasCommand}
 
   def parse(string) when is_binary(string) do
-    case String.trim(string) do
+    text_command =
+      string
+      |> String.trim()
+      |> String.replace(~r/[[:space:]]+/, " ")
+    case text_command do
       "" -> %UnsupportedCommandError{}
       "C 10 20" -> %CreateCanvasCommand{width: 10, height: 20}
     end
@@ -40,5 +44,9 @@ defmodule Termpaint.CommandInterpreterTest do
 
   test "create a canvas" do
     assert %CreateCanvasCommand{width: 10, height: 20} == CommandInterpreter.parse("C 10 20")
+  end
+
+  test "create a canvas command with superfluous whitespace chars" do
+    assert %CreateCanvasCommand{width: 10, height: 20} == CommandInterpreter.parse("  C   \t 10 \r \n  20 \n \t")
   end
 end
