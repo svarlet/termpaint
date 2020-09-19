@@ -146,4 +146,9 @@ defmodule Termpaint.CommandInterpreterTest do
   test "draw a line from (2,4) to (100, 5)" do
     assert %DrawLineCommand{from: {2, 4}, to: {100, 5}} == CommandInterpreter.parse("L 2 4 100 5")
   end
+
+  test "draw a line from coordinates not defined by nunbers" do
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L a 2 3 4")
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 ? 3 4")
+  end
 end
