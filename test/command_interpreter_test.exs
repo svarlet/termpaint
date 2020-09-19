@@ -18,6 +18,10 @@ defmodule Termpaint.BucketFillCommand do
   defstruct position: {1, 1}, ink: "."
 end
 
+defmodule Termpaint.QuitCommand do
+  defstruct []
+end
+
 defmodule Termpaint.Parser.Helpers do
   import NimbleParsec
 
@@ -70,6 +74,11 @@ defmodule Termpaint.Parser.Helpers do
     |> utf8_string([], 1)
     |> eos()
   end
+
+  def quit_command() do
+    string("Q")
+    |> eos()
+  end
 end
 
 defmodule Termpaint.Parser do
@@ -82,7 +91,8 @@ defmodule Termpaint.Parser do
       canvas_command(),
       draw_line_command(),
       draw_rectangle_command(),
-      bucket_fill_command()
+      bucket_fill_command(),
+      quit_command()
     ])
   )
 end
@@ -94,6 +104,7 @@ defmodule Termpaint.CommandInterpreter do
     DrawLineCommand,
     DrawRectangleCommand,
     BucketFillCommand,
+    QuitCommand,
     Parser
   }
 
@@ -120,6 +131,9 @@ defmodule Termpaint.CommandInterpreter do
 
           ["B", x, y, ink] ->
             %BucketFillCommand{position: {x, y}, ink: ink}
+
+          ["Q"] ->
+            %QuitCommand{}
         end
 
       {:error, _, _, _, _, _} ->
@@ -141,7 +155,8 @@ defmodule Termpaint.CommandInterpreterTest do
     CreateCanvasCommand,
     DrawLineCommand,
     DrawRectangleCommand,
-    BucketFillCommand
+    BucketFillCommand,
+    QuitCommand
   }
 
   test "nil string" do
@@ -226,6 +241,11 @@ defmodule Termpaint.CommandInterpreterTest do
     rejects_text_command("L 1 18 2 3 extra")
     rejects_text_command("R 3 4 19 2993 extra")
     rejects_text_command("B 1 18 ? extra")
+    rejects_text_command("Q extra")
+  end
+
+  test "quit command" do
+    assert %QuitCommand{} == CommandInterpreter.parse("Q")
   end
 
   defp rejects_text_command(text_command) do
