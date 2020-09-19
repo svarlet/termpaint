@@ -47,8 +47,7 @@ defmodule Termpaint.Parser do
     |> ignore(string(" "))
     |> concat(Helpers.coords())
 
-  defparsec(:canvas_command, canvas_command)
-  defparsec(:draw_line_command, draw_line_command)
+  defparsec(:to_supported_command, choice([canvas_command, draw_line_command]))
 end
 
 defmodule Termpaint.CommandInterpreter do
@@ -63,26 +62,18 @@ defmodule Termpaint.CommandInterpreter do
   def parse(string) when is_binary(string) do
     text_command = sanitize(string)
 
-    case text_command do
-      "" ->
-        %UnsupportedCommandError{}
-
-      "C" <> _args ->
-        case Parser.canvas_command(text_command) do
-          {:ok, ["C", width, height], _, _, _, _} ->
+    case Parser.to_supported_command(text_command) do
+      {:ok, tokens, _, _, _, _} ->
+        case tokens do
+          ["C", width, height] ->
             %CreateCanvasCommand{width: width, height: height}
 
-          _error ->
-            %UnsupportedCommandError{}
+          ["L", x_from, y_from, x_to, y_to] ->
+            %DrawLineCommand{from: {x_from, y_from}, to: {x_to, y_to}}
         end
 
-      "L" <> _args ->
-        case Parser.draw_line_command(text_command) do
-          {:ok, ["L", x_from, y_from, x_to, y_to], _, _, _, _} ->
-            %DrawLineCommand{from: {x_from, y_from}, to: {x_to, y_to}}
-          _error ->
-            %UnsupportedCommandError{}
-        end
+      {:error, _, _, _, _, _} ->
+        %UnsupportedCommandError{}
     end
   end
 
@@ -102,15 +93,15 @@ defmodule Termpaint.CommandInterpreterTest do
   }
 
   test "nil string" do
-    rejects_text_command nil
+    rejects_text_command(nil)
   end
 
   test "empty string" do
-    rejects_text_command ""
+    rejects_text_command("")
   end
 
   test "blank string" do
-    rejects_text_command "\t        \r \n  \t\t  "
+    rejects_text_command("\t        \r \n  \t\t  ")
   end
 
   test "create a 10x20 canvas" do
@@ -127,20 +118,20 @@ defmodule Termpaint.CommandInterpreterTest do
   end
 
   test "create a canvas when width or height is not a number" do
-    rejects_text_command "C a 10"
-    rejects_text_command "C 3 ?"
+    rejects_text_command("C a 10")
+    rejects_text_command("C 3 ?")
   end
 
   test "create a canvas when width or height is a negative integer" do
-    rejects_text_command "C -1 20"
-    rejects_text_command "C 10 -4"
+    rejects_text_command("C -1 20")
+    rejects_text_command("C 10 -4")
   end
 
   test "draw a line when either origin or destination coords have a negative position" do
-    rejects_text_command "L -1 2 3 4"
-    rejects_text_command "L 1 -2 3 4"
-    rejects_text_command "L 1 2 -3 4"
-    rejects_text_command "L 1 2 3 -4"
+    rejects_text_command("L -1 2 3 4")
+    rejects_text_command("L 1 -2 3 4")
+    rejects_text_command("L 1 2 -3 4")
+    rejects_text_command("L 1 2 3 -4")
   end
 
   test "draw a line from (2,4) to (100, 5)" do
@@ -148,14 +139,13 @@ defmodule Termpaint.CommandInterpreterTest do
   end
 
   test "draw a line from coordinates not defined by nunbers" do
-    rejects_text_command "L a 2 3 4"
-    rejects_text_command "L 1 ? 3 4"
+    rejects_text_command("L a 2 3 4")
+    rejects_text_command("L 1 ? 3 4")
   end
 
   test "draw a line to coordinates not defined by nunbers" do
-    rejects_text_command "L 1 2 k 4"
-    rejects_text_command "L 1 2 3 -"
-    rejects_text_command "L a a a a"
+    rejects_text_command("L 1 2 k 4")
+    rejects_text_command("L 1 2 3 -")
   end
 
   defp rejects_text_command(text_command) do
