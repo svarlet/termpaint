@@ -50,6 +50,7 @@ defmodule Termpaint.CommandInterpreter do
       "C" <> _args ->
         case Parser.canvas_command(text_command) do
           {:ok, ["C", width, height], _, _, _, _} -> %CreateCanvasCommand{width: width, height: height}
+          _error -> %UnsupportedCommandError{}
         end
     end
   end
@@ -87,5 +88,10 @@ defmodule Termpaint.CommandInterpreterTest do
 
   test "create a 5x5 canvas" do
     assert %CreateCanvasCommand{width: 5, height: 5} == CommandInterpreter.parse("C 5 5")
+  end
+
+  test "create a canvas when width or height is not a number" do
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("C a 10")
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("C 3 ?")
   end
 end
