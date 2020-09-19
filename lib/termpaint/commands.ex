@@ -39,7 +39,7 @@ defmodule Termpaint.DrawLineCommand do
   defstruct from: {1, 1}, to: {1, 1}
 
   defimpl Termpaint.CanvasTransformation do
-    def transform(%DrawLineCommand{}, nil) do
+    def transform(_command, nil) do
       %NilCanvasError{}
     end
 
