@@ -17,6 +17,7 @@ defmodule Termpaint.CommandInterpreter do
     case text_command do
       "" -> %UnsupportedCommandError{}
       "C 10 20" -> %CreateCanvasCommand{width: 10, height: 20}
+      "C 5 5" -> %CreateCanvasCommand{width: 5, height: 5}
     end
   end
 
@@ -48,5 +49,9 @@ defmodule Termpaint.CommandInterpreterTest do
 
   test "create a canvas command with superfluous whitespace chars" do
     assert %CreateCanvasCommand{width: 10, height: 20} == CommandInterpreter.parse("  C   \t 10 \r \n  20 \n \t")
+  end
+
+  test "create a 5x5 canvas" do
+    assert %CreateCanvasCommand{width: 5, height: 5} == CommandInterpreter.parse("C 5 5")
   end
 end
