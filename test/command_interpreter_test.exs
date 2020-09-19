@@ -28,26 +28,27 @@ defmodule Termpaint.Parser.Helpers do
     |> ignore(string: " ")
     |> concat(positive_int())
   end
+
+  def canvas_command() do
+    string("C")
+    |> ignore(string(" "))
+    |> concat(dimensions())
+  end
+
+  def draw_line_command() do
+    string("L")
+    |> ignore(string(" "))
+    |> concat(coords())
+    |> ignore(string(" "))
+    |> concat(coords())
+  end
 end
 
 defmodule Termpaint.Parser do
   import NimbleParsec
+  import Termpaint.Parser.Helpers
 
-  alias Termpaint.Parser.Helpers
-
-  canvas_command =
-    string("C")
-    |> ignore(string(" "))
-    |> concat(Helpers.dimensions())
-
-  draw_line_command =
-    string("L")
-    |> ignore(string(" "))
-    |> concat(Helpers.coords())
-    |> ignore(string(" "))
-    |> concat(Helpers.coords())
-
-  defparsec(:to_supported_command, choice([canvas_command, draw_line_command]))
+  defparsec(:to_supported_command, choice([canvas_command(), draw_line_command()]))
 end
 
 defmodule Termpaint.CommandInterpreter do
