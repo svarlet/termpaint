@@ -43,8 +43,8 @@ defmodule Termpaint.DrawLineCommand do
       %NilCanvasError{}
     end
 
-    def transform(%DrawLineCommand{from: {x, y}}, %Canvas{width: width, height: height}) do
-      unless x in 1..width and y in 1..height do
+    def transform(%DrawLineCommand{from: from}, canvas) do
+      unless Canvas.within?(canvas, from) do
         %OutOfBoundsError{}
       end
     end
