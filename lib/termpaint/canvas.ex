@@ -4,6 +4,6 @@ defmodule Termpaint.Canvas do
   def within?(canvas, point) do
     {x, y} = point
 
-    x > 0 && x <= canvas.width && y > 0 && y <= canvas.height
+    x in 1..canvas.width && y in 1..canvas.height
   end
 end
