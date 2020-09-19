@@ -13,5 +13,15 @@ defmodule CanvasTest do
       point = {4, 3}
       refute Canvas.within?(canvas, point)
     end
+
+    test "returns false when the Y coord of a point stands outside the canvas" do
+      canvas = %Canvas{width: 3, height: 3}
+
+      point = {1, 0}
+      refute Canvas.within?(canvas, point)
+
+      point = {1, 4}
+      refute Canvas.within?(canvas, point)
+    end
   end
 end
