@@ -6,15 +6,29 @@ defmodule Termpaint.CreateCanvasCommand do
   defstruct width: 1, height: 1
 end
 
+defmodule Termpaint.Parser.Helpers do
+  import NimbleParsec
+
+  def positive_int() do
+    integer(min: 1)
+  end
+
+  def dimensions() do
+    positive_int()
+    |> ignore(string: " ")
+    |> concat(positive_int())
+  end
+end
+
 defmodule Termpaint.Parser do
   import NimbleParsec
+
+  alias Termpaint.Parser.Helpers
 
   canvas_command =
     string("C")
     |> ignore(string(" "))
-    |> integer(min: 1)
-    |> ignore(string(" "))
-    |> integer(min: 1)
+    |> concat(Helpers.dimensions())
 
   defparsec(:canvas_command, canvas_command)
 end
