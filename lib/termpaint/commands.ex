@@ -9,15 +9,17 @@ defmodule Termpaint.CreateCanvasCommand do
   defstruct width: 1, height: 1
 
   defimpl Termpaint.CanvasTransformation do
-    def transform(%Termpaint.CreateCanvasCommand{width: 0, height: _}, _canvas) do
+    alias Termpaint.CreateCanvasCommand
+
+    def transform(%CreateCanvasCommand{width: 0, height: _}, _canvas) do
       %AbsurdCanvasSizeError{}
     end
 
-    def transform(%Termpaint.CreateCanvasCommand{width: _, height: 0}, _canvas) do
+    def transform(%CreateCanvasCommand{width: _, height: 0}, _canvas) do
       %AbsurdCanvasSizeError{}
     end
 
-    def transform(%Termpaint.CreateCanvasCommand{width: width, height: height}, _canvas) do
+    def transform(%CreateCanvasCommand{width: width, height: height}, _canvas) do
       %Canvas{width: width, height: height}
     end
   end
