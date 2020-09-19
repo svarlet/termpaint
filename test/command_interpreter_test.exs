@@ -65,6 +65,7 @@ defmodule Termpaint.Parser.Helpers do
     |> concat(coords())
     |> ignore(string(" "))
     |> utf8_string([], 1)
+    |> eos()
   end
 end
 
@@ -210,6 +211,11 @@ defmodule Termpaint.CommandInterpreterTest do
 
   test "bucket fill requires 2 coords and 1 ascii character" do
     assert %BucketFillCommand{position: {3, 4}, ink: "+"} == CommandInterpreter.parse("B 3 4 +")
+  end
+
+  test "bucket fill's ink cannot be 2 characters or more" do
+    rejects_text_command("B 1 18 yo")
+    rejects_text_command("B 1 18 foo")
   end
 
   defp rejects_text_command(text_command) do
