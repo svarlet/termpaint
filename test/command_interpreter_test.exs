@@ -6,8 +6,21 @@ defmodule Termpaint.CreateCanvasCommand do
   defstruct width: 1, height: 1
 end
 
+defmodule Termpaint.Parser do
+  import NimbleParsec
+
+  canvas_command =
+    string("C")
+    |> ignore(string(" "))
+    |> integer(min: 1)
+    |> ignore(string(" "))
+    |> integer(min: 1)
+
+  defparsec(:canvas_command, canvas_command)
+end
+
 defmodule Termpaint.CommandInterpreter do
-  alias Termpaint.{UnsupportedCommandError, CreateCanvasCommand}
+  alias Termpaint.{UnsupportedCommandError, CreateCanvasCommand, Parser}
 
   defp sanitize(text_command) do
     text_command
@@ -20,8 +33,10 @@ defmodule Termpaint.CommandInterpreter do
 
     case text_command do
       "" -> %UnsupportedCommandError{}
-      "C 10 20" -> %CreateCanvasCommand{width: 10, height: 20}
-      "C 5 5" -> %CreateCanvasCommand{width: 5, height: 5}
+      "C" <> _args ->
+        case Parser.canvas_command(text_command) do
+          {:ok, ["C", width, height], _, _, _, _} -> %CreateCanvasCommand{width: width, height: height}
+        end
     end
   end
 
