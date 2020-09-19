@@ -91,5 +91,16 @@ defmodule CanvasTransformationTest do
       canvas = CanvasTransformation.transform(a_1px_line_command, a_3x3_canvas)
       assert %{{2, 3} => "x"} == canvas.bitmap
     end
+
+    test "draw a horizontal line" do
+      a_3x3_canvas = %Canvas{width: 3, height: 3}
+      a_hline_command = %DrawLineCommand{from: {1, 2}, to: {3, 2}}
+      canvas = CanvasTransformation.transform(a_hline_command, a_3x3_canvas)
+      assert %{
+        {1, 2} => "x",
+        {2, 2} => "x",
+        {3, 2} => "x"
+      } == canvas.bitmap
+    end
   end
 end
