@@ -47,11 +47,15 @@ defmodule Termpaint.CommandInterpreter do
 
     case text_command do
       "" -> %UnsupportedCommandError{}
+
       "C" <> _args ->
         case Parser.canvas_command(text_command) do
           {:ok, ["C", width, height], _, _, _, _} -> %CreateCanvasCommand{width: width, height: height}
           _error -> %UnsupportedCommandError{}
         end
+
+      "L" <> _args ->
+        %UnsupportedCommandError{}
     end
   end
 
@@ -98,5 +102,12 @@ defmodule Termpaint.CommandInterpreterTest do
   test "create a canvas when width or height is a negative integer" do
     assert %UnsupportedCommandError{} == CommandInterpreter.parse("C -1 20")
     assert %UnsupportedCommandError{} == CommandInterpreter.parse("C 10 -4")
+  end
+
+  test "draw a line when either origin or destination coords have a negative position" do
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L -1 2 3 4")
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 -2 3 4")
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 2 -3 4")
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("L 1 2 3 -4")
   end
 end
