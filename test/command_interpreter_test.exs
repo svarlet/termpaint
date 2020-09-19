@@ -5,11 +5,14 @@ end
 defmodule Termpaint.CommandInterpreter do
   alias Termpaint.UnsupportedCommandError
 
-  def parse(string) do
-    case string do
-      nil -> %UnsupportedCommandError{}
+  def parse(string) when is_binary(string) do
+    case String.trim(string) do
       "" -> %UnsupportedCommandError{}
     end
+  end
+
+  def parse(_) do
+    %UnsupportedCommandError{}
   end
 end
 
@@ -24,5 +27,9 @@ defmodule Termpaint.CommandInterpreterTest do
 
   test "empty string" do
     assert %UnsupportedCommandError{} == CommandInterpreter.parse("")
+  end
+
+  test "blank string" do
+    assert %UnsupportedCommandError{} == CommandInterpreter.parse("\t        \r \n  \t\t  ")
   end
 end
