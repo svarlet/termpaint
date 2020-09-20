@@ -42,4 +42,15 @@ defmodule Termpaint.BucketFillTest do
       {1, 3}, {2, 3}, {3, 3},
     ])
   end
+
+  test "bucket fill at a marked coordinate does not alter the canvas" do
+    premarked_position = {2, 2}
+    old_canvas =
+      %Canvas{width: 3, height: 3}
+      |> Canvas.mark(premarked_position, ".")
+    new_canvas =
+      %BucketFillCommand{position: premarked_position, ink: "c"}
+      |> CanvasTransformation.transform(old_canvas)
+    assert new_canvas == old_canvas
+  end
 end
