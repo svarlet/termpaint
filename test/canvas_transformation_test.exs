@@ -174,5 +174,12 @@ defmodule CanvasTransformationTest do
       rectangle_command = %DrawRectangleCommand{from: {1, 1}, to: {3, 4}}
       assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
     end
+
+    test "a 1x1 rectangle is 1 pixel" do
+      canvas = %Canvas{width: 3, height: 3}
+      command = %DrawRectangleCommand{from: {2, 2}, to: {2, 2}}
+      canvas = CanvasTransformation.transform(command, canvas)
+      assert_coords_marked(canvas.bitmap, [{2, 2}])
+    end
   end
 end

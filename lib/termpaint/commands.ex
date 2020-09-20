@@ -71,12 +71,16 @@ defmodule Termpaint.DrawRectangleCommand do
   defstruct from: {1, 1}, to: {1, 1}
 
   defimpl CanvasTransformation do
+    @ink "x"
+
     def transform(_command, nil), do: %NilCanvasError{}
 
     def transform(command, canvas) do
       cond do
         not(Canvas.within?(canvas, command.from) && Canvas.within?(canvas, command.to)) ->
           %OutOfBoundsError{}
+        true ->
+          %Canvas{canvas | bitmap: Map.put(canvas.bitmap, command.from, @ink)}
       end
     end
   end
