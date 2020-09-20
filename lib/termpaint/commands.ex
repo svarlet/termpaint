@@ -117,7 +117,8 @@ defmodule Termpaint.BucketFillCommand do
         transform_rec(canvas, ink, rest)
       else
         canvas = Canvas.mark(canvas, coord, ink)
-        transform_rec(canvas, ink, Enum.concat(Canvas.neighbours(canvas, coord), rest))
+        neighbours = Canvas.neighbours(canvas, coord)
+        transform_rec(canvas, ink, Enum.concat(neighbours, rest))
       end
     end
   end
