@@ -8,6 +8,7 @@ defmodule Termpaint.BucketFillTest do
     CanvasTransformation,
     NilCanvasError,
     OutOfBoundsError,
+    DrawLineCommand,
     Canvas
   }
 
@@ -72,6 +73,19 @@ defmodule Termpaint.BucketFillTest do
       {1, 1} => "c", {2, 1} => "c", {3, 1} => ".",
       {1, 2} => "c", {2, 2} => "c", {3, 2} => "c",
       {1, 3} => ".", {2, 3} => "c", {3, 3} => "c"
+    }
+  end
+
+  test "bucket fill does not paint within a fence from outside the fence" do
+    canvas = %Canvas{width: 5, height: 5}
+    old_canvas = CanvasTransformation.transform(%DrawLineCommand{from: {5, 4}, to: {3, 1}}, canvas)
+    new_canvas = CanvasTransformation.transform(%BucketFillCommand{position: {2, 3}, ink: "."}, old_canvas)
+    assert new_canvas.bitmap == %{
+      {1, 1} => ".", {2, 1} => ".", {3, 1} => "x",
+      {1, 2} => ".", {2, 2} => ".", {3, 2} => "x",
+      {1, 3} => ".", {2, 3} => ".", {3, 3} => "x",
+      {1, 4} => ".", {2, 4} => ".", {3, 4} => "x", {4, 4} => "x", {5, 4} => "x",
+      {1, 5} => ".", {2, 5} => ".", {3, 5} => ".", {4, 5} => ".", {5, 5} => "."
     }
   end
 end

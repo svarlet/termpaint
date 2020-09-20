@@ -105,14 +105,28 @@ defmodule Termpaint.BucketFillCommand do
         not Canvas.within?(canvas, command.position) -> %OutOfBoundsError{}
         canvas.bitmap[command.position] -> canvas
         true ->
-          for x <- 1..canvas.width, y <- 1..canvas.height, reduce: canvas do
-            canvas ->
-              if canvas.bitmap[{x, y}] do
-                canvas
-              else
-                Canvas.mark(canvas, {x, y}, command.ink)
-              end
-          end
+          transform_rec(canvas, command.ink, [command.position])
+          # for x <- 1..canvas.width, y <- 1..canvas.height, reduce: canvas do
+          #   canvas ->
+          #     if canvas.bitmap[{x, y}] do
+          #       canvas
+          #     else
+          #       Canvas.mark(canvas, {x, y}, command.ink)
+          #     end
+          # end
+      end
+    end
+
+    defp transform_rec(canvas, _ink, []) do
+      canvas
+    end
+
+    defp transform_rec(canvas, ink, [coord | rest]) do
+      if canvas.bitmap[coord] do
+        transform_rec(canvas, ink, rest)
+      else
+        canvas = Canvas.mark(canvas, coord, ink)
+        transform_rec(canvas, ink, Enum.concat(Canvas.neighbours(canvas, coord), rest))
       end
     end
   end
