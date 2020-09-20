@@ -161,12 +161,16 @@ defmodule CanvasTransformationTest do
 
     test "rectangle corners outside the boundaries of the canvas" do
       canvas = %Canvas{width: 3, height: 3}
+
       rectangle_command = %DrawRectangleCommand{from: {0, 1}, to: {3, 3}}
       assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
+
       rectangle_command = %DrawRectangleCommand{from: {1, 0}, to: {3, 3}}
       assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
+
       rectangle_command = %DrawRectangleCommand{from: {1, 1}, to: {4, 3}}
       assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
+
       rectangle_command = %DrawRectangleCommand{from: {1, 1}, to: {3, 4}}
       assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
     end
