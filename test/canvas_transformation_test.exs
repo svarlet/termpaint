@@ -159,7 +159,7 @@ defmodule CanvasTransformationTest do
       assert %NilCanvasError{} == CanvasTransformation.transform(rectangle_command, nil)
     end
 
-    test "from position is out of bounds" do
+    test "rectangle corners outside the boundaries of the canvas" do
       canvas = %Canvas{width: 3, height: 3}
       rectangle_command = %DrawRectangleCommand{from: {0, 1}, to: {3, 3}}
       assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
