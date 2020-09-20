@@ -1,6 +1,6 @@
 defmodule Termpaint.TextRenderer do
   def render(canvas) do
-    header = "---\n"
+    header = String.duplicate("-", canvas.width + 2) <> "\n"
     footer = header
     body =
       for y <- 1..canvas.height do
