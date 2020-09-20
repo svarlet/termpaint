@@ -1,4 +1,4 @@
-defmodule CanvasTransformationTest do
+defmodule Termpaint.DrawRectangleTest do
   use ExUnit.Case, async: true
 
   import Termpaint.TestHelpers, only: [assert_coords_marked: 2]
