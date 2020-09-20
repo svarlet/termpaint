@@ -132,5 +132,15 @@ defmodule CanvasTransformationTest do
         {2, 3} => "x"
       } == canvas.bitmap
     end
+
+    test "diagonal toward the bottom left corner", context do
+      a_diagonal_command = %DrawLineCommand{from: {3, 1}, to: {2, 2}}
+      canvas = CanvasTransformation.transform(a_diagonal_command, context.a_3x3_canvas)
+      assert %{
+        {3, 1} => "x",
+        {2, 1} => "x",
+        {2, 2} => "x"
+      } = canvas.bitmap
+    end
   end
 end
