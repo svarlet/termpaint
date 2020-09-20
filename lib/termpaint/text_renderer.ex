@@ -1,6 +1,9 @@
 defmodule Termpaint.TextRenderer do
+  @horizontal_fencing "-"
+  @vertical_fencing "|"
+
   def render(canvas) do
-    header = String.duplicate("-", canvas.width + 2) <> "\n"
+    header = String.duplicate(@horizontal_fencing, canvas.width + 2) <> "\n"
     footer = header
     body =
       for y <- 1..canvas.height do
@@ -8,7 +11,7 @@ defmodule Termpaint.TextRenderer do
           for x <- 1..canvas.width do
             canvas.bitmap[{x, y}] || " "
           end
-        ["|" | List.insert_at(row, -1, "|\n")]
+        [@vertical_fencing | List.insert_at(row, -1, "#{@vertical_fencing}\n")]
       end
     [header, body, footer]
   end
