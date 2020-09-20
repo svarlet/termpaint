@@ -110,5 +110,17 @@ defmodule CanvasTransformationTest do
         {2, 3} => "x"
       } == canvas.bitmap
     end
+
+    test "a diagonal line is drawn as a horizontal line and a vertical line", context do
+      a_diagonal_command = %DrawLineCommand{from: {1, 1}, to: {3, 3}}
+      canvas = CanvasTransformation.transform(a_diagonal_command, context.a_3x3_canvas)
+      assert %{
+        {1, 1} => "x",
+        {2, 1} => "x",
+        {3, 1} => "x",
+        {3, 2} => "x",
+        {3, 3} => "x"
+      } = canvas.bitmap
+    end
   end
 end

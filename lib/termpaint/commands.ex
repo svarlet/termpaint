@@ -58,7 +58,7 @@ defmodule Termpaint.DrawLineCommand do
             end
 
           for y <- y_from..y_to, reduce: canvas do
-            canvas -> %Canvas{canvas | bitmap: Map.put(canvas.bitmap, {x_from, y}, @dot)}
+            canvas -> %Canvas{canvas | bitmap: Map.put(canvas.bitmap, {x_to, y}, @dot)}
           end
       end
     end
