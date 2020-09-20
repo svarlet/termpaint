@@ -30,4 +30,14 @@ defmodule CanvasTest do
       assert Canvas.within?(canvas, point)
     end
   end
+
+  describe "mark" do
+    test "marks 1 coordinate with the specified ink character" do
+      canvas =
+        %Canvas{width: 3, height: 3}
+        |> Canvas.mark({2, 2}, ".")
+
+      assert canvas.bitmap == %{{2, 2} => "."}
+    end
+  end
 end
