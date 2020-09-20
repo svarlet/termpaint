@@ -213,5 +213,19 @@ defmodule CanvasTransformationTest do
       canvas = CanvasTransformation.transform(command, canvas)
       assert_coords_marked(canvas.bitmap, [{1, 3}, {1, 2}, {1, 1}])
     end
+
+    test "a 5x5 rectangle has a 3x3 untouched surface in the center" do
+      canvas = %Canvas{width: 5, height: 5}
+      command = %DrawRectangleCommand{from: {1, 1}, to: {5, 5}}
+      canvas = CanvasTransformation.transform(command, canvas)
+      assert_coords_marked(canvas.bitmap, [
+        {1, 1}, {2, 1}, {3, 1}, {4, 1}, {5, 1},
+        {1, 2},                         {5, 2},
+        {1, 3},                         {5, 3},
+        {1, 4},                         {5, 4},
+        {1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5},
+      ])
+    end
+
   end
 end
