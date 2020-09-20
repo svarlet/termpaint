@@ -1,8 +1,11 @@
 defmodule Termpaint do
+  use Exceptional
+
   alias Termpaint.{
     CommandInterpreter,
     CanvasTransformation,
-    TextRenderer
+    TextRenderer,
+    QuitCommand
   }
 
   def main(_args) do
@@ -15,10 +18,16 @@ defmodule Termpaint do
     new_app_state =
       IO.gets("enter command: ")
       |> CommandInterpreter.parse()
-      |> CanvasTransformation.transform(app_state)
-      |> tee(&output/1)
+      ~> CanvasTransformation.transform(app_state)
+      ~> tee(&output/1)
 
-    {app_state, new_app_state}
+    if_exception(new_app_state) do
+      fn %QuitCommand{} -> System.halt()
+         _ -> {app_state, app_state}
+      end.()
+    else
+      fn _ -> {app_state, new_app_state} end.()
+    end
   end
 
   defp output(app_state) do

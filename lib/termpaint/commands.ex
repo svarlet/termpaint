@@ -125,5 +125,5 @@ defmodule Termpaint.BucketFillCommand do
 end
 
 defmodule Termpaint.QuitCommand do
-  defstruct []
+  defexception [:message]
 end
