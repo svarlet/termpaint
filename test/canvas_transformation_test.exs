@@ -181,5 +181,12 @@ defmodule CanvasTransformationTest do
       canvas = CanvasTransformation.transform(command, canvas)
       assert_coords_marked(canvas.bitmap, [{2, 2}])
     end
+
+    test "a 2x2 rectangle has no other pixels than its corners" do
+      canvas = %Canvas{width: 3, height: 3}
+      command = %DrawRectangleCommand{from: {2, 2}, to: {3, 3}}
+      canvas = CanvasTransformation.transform(command, canvas)
+      assert_coords_marked(canvas.bitmap, [{2, 2}, {2, 3}, {3, 2}, {3, 3}])
+    end
   end
 end
