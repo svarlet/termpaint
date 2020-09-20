@@ -73,8 +73,6 @@ defmodule Termpaint.DrawRectangleCommand do
   defstruct from: {1, 1}, to: {1, 1}
 
   defimpl CanvasTransformation do
-    @ink "x"
-
     def transform(_command, nil), do: %NilCanvasError{}
 
     def transform(command, canvas) do
@@ -86,8 +84,6 @@ defmodule Termpaint.DrawRectangleCommand do
           CanvasTransformation.transform(%DrawLineCommand{from: command.to, to: command.from}, canvas)
       end
     end
-
-    def mark(canvas, coordinate), do: Canvas.mark(canvas, coordinate, @ink)
   end
 end
 
