@@ -10,4 +10,9 @@ defmodule Termpaint.Canvas do
   def mark(canvas, coordinate, ink) do
     %__MODULE__{canvas | bitmap: Map.put(canvas.bitmap, coordinate, ink)}
   end
+
+  def neighbours(canvas, {x, y}) do
+    [{x, y + 1}, {x + 1, y}, {x, y - 1}, {x - 1, y}]
+    |> Enum.filter(&within?(canvas, &1))
+  end
 end
