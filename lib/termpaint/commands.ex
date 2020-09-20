@@ -81,8 +81,6 @@ defmodule Termpaint.DrawRectangleCommand do
       cond do
         not Canvas.within?(canvas, command.from) -> %OutOfBoundsError{}
         not Canvas.within?(canvas, command.to) -> %OutOfBoundsError{}
-        command.from == command.to ->
-          mark(canvas, command.from)
         true ->
           canvas = CanvasTransformation.transform(%DrawLineCommand{from: command.from, to: command.to}, canvas)
           CanvasTransformation.transform(%DrawLineCommand{from: command.to, to: command.from}, canvas)
