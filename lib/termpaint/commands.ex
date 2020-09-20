@@ -90,13 +90,16 @@ end
 defmodule Termpaint.BucketFillCommand do
   alias Termpaint.{
     CanvasTransformation,
-    NilCanvasError
+    NilCanvasError,
+    OutOfBoundsError
   }
 
   defstruct position: {1, 1}, ink: "."
 
   defimpl CanvasTransformation do
-    def transform(_, _), do: %NilCanvasError{}
+    def transform(_, nil), do: %NilCanvasError{}
+
+    def transform(_, _), do: %OutOfBoundsError{}
   end
 end
 
