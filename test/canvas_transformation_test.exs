@@ -76,14 +76,14 @@ defmodule CanvasTransformationTest do
 
     test "drawing a line from a position outside the canvas returns an error", context do
       assert %OutOfBoundsError{} ==
-        %DrawLineCommand{from: {0, 0}, to: {2, 3}}
-        |> CanvasTransformation.transform(context.a_3x3_canvas)
+               %DrawLineCommand{from: {0, 0}, to: {2, 3}}
+               |> CanvasTransformation.transform(context.a_3x3_canvas)
     end
 
     test "drawing a line to a position outside the canvas returns an error", context do
       assert %OutOfBoundsError{} ==
-        %DrawLineCommand{from: {1, 1}, to: {100, 100}}
-        |> CanvasTransformation.transform(context.a_3x3_canvas)
+               %DrawLineCommand{from: {1, 1}, to: {100, 100}}
+               |> CanvasTransformation.transform(context.a_3x3_canvas)
     end
 
     test "draw a 1px line", context do
@@ -138,19 +138,37 @@ defmodule CanvasTransformationTest do
       bitmap_of_dots = for x <- 1..3, y <- 1..3, into: %{}, do: {{x, y}, "."}
       canvas = %Canvas{width: 3, height: 3, bitmap: bitmap_of_dots}
       canvas = CanvasTransformation.transform(a_line_command, canvas)
+
       assert canvas.bitmap == %{
-        {1, 1} => "x", {2, 1} => "x", {3, 1} => ".",
-        {1, 2} => ".", {2, 2} => "x", {3, 2} => ".",
-        {1, 3} => ".", {2, 3} => "x", {3, 3} => ".",
-      }
+               {1, 1} => "x",
+               {2, 1} => "x",
+               {3, 1} => ".",
+               {1, 2} => ".",
+               {2, 2} => "x",
+               {3, 2} => ".",
+               {1, 3} => ".",
+               {2, 3} => "x",
+               {3, 3} => "."
+             }
     end
   end
 
   describe "drawing a rectangle" do
     test "nil canvas" do
       rectangle_command = %DrawRectangleCommand{from: {1, 1}, to: {3, 3}}
-      assert %NilCanvasError{} ==
-        CanvasTransformation.transform(rectangle_command, nil)
+      assert %NilCanvasError{} == CanvasTransformation.transform(rectangle_command, nil)
+    end
+
+    test "from position is out of bounds" do
+      canvas = %Canvas{width: 3, height: 3}
+      rectangle_command = %DrawRectangleCommand{from: {0, 1}, to: {3, 3}}
+      assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
+      rectangle_command = %DrawRectangleCommand{from: {1, 0}, to: {3, 3}}
+      assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
+      rectangle_command = %DrawRectangleCommand{from: {1, 1}, to: {4, 3}}
+      assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
+      rectangle_command = %DrawRectangleCommand{from: {1, 1}, to: {3, 4}}
+      assert %OutOfBoundsError{} == CanvasTransformation.transform(rectangle_command, canvas)
     end
   end
 end

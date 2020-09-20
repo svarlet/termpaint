@@ -66,12 +66,19 @@ defmodule Termpaint.DrawLineCommand do
 end
 
 defmodule Termpaint.DrawRectangleCommand do
-  alias Termpaint.{CanvasTransformation, NilCanvasError}
+  alias Termpaint.{CanvasTransformation, NilCanvasError, OutOfBoundsError, Canvas}
 
   defstruct from: {1, 1}, to: {1, 1}
 
   defimpl CanvasTransformation do
-    def transform(command, nil), do: %NilCanvasError{}
+    def transform(_command, nil), do: %NilCanvasError{}
+
+    def transform(command, canvas) do
+      cond do
+        not(Canvas.within?(canvas, command.from) && Canvas.within?(canvas, command.to)) ->
+          %OutOfBoundsError{}
+      end
+    end
   end
 end
 
