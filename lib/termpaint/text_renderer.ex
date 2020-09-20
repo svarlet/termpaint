@@ -1,6 +1,7 @@
 defmodule Termpaint.TextRenderer do
   @horizontal_fencing "-"
   @vertical_fencing "|"
+  @trailing_vertical_fencing "|\n"
   @pristine_pixel " "
 
   def render(canvas) do
@@ -10,7 +11,7 @@ defmodule Termpaint.TextRenderer do
           for x <- 1..canvas.width do
             canvas.bitmap[{x, y}] || @pristine_pixel
           end
-        [@vertical_fencing | List.insert_at(row, -1, "#{@vertical_fencing}\n")]
+        [@vertical_fencing | List.insert_at(row, -1, @trailing_vertical_fencing)]
       end
     [header(canvas), body, footer(canvas)]
   end
