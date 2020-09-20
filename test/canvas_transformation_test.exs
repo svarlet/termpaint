@@ -128,9 +128,20 @@ defmodule CanvasTransformationTest do
     end
 
     defp assert_coords_marked(bitmap, coords) do
-      for coord <- coords do
-        assert(bitmap[coord] == "x", "Expected #{inspect(coord)} to be marked.")
-      end
+      expected_bitmap = for coord <- coords, into: %{}, do: {coord, "x"}
+      assert expected_bitmap == bitmap
+    end
+
+    test "drawing a line overwrites previously marked coords" do
+      a_line_command = %DrawLineCommand{from: {1, 1}, to: {2, 3}}
+      bitmap_of_dots = for x <- 1..3, y <- 1..3, into: %{}, do: {{x, y}, "."}
+      canvas = %Canvas{width: 3, height: 3, bitmap: bitmap_of_dots}
+      canvas = CanvasTransformation.transform(a_line_command, canvas)
+      assert canvas.bitmap == %{
+        {1, 1} => "x", {2, 1} => "x", {3, 1} => ".",
+        {1, 2} => ".", {2, 2} => "x", {3, 2} => ".",
+        {1, 3} => ".", {2, 3} => "x", {3, 3} => ".",
+      }
     end
   end
 end
