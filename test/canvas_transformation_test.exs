@@ -199,5 +199,19 @@ defmodule CanvasTransformationTest do
         {1, 3}, {2, 3}, {3, 3},
       ])
     end
+
+    test "a 3x1 rectangle is a horizontal line" do
+      canvas = %Canvas{width: 3, height: 3}
+      command = %DrawRectangleCommand{from: {1, 1}, to: {3, 1}}
+      canvas = CanvasTransformation.transform(command, canvas)
+      assert_coords_marked(canvas.bitmap, [{1, 1}, {2, 1}, {3, 1}])
+    end
+
+    test "a 1x3 rectangle is a vertical line" do
+      canvas = %Canvas{width: 3, height: 3}
+      command = %DrawRectangleCommand{from: {1, 1}, to: {1, 3}}
+      canvas = CanvasTransformation.transform(command, canvas)
+      assert_coords_marked(canvas.bitmap, [{1, 3}, {1, 2}, {1, 1}])
+    end
   end
 end
