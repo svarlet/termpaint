@@ -188,5 +188,16 @@ defmodule CanvasTransformationTest do
       canvas = CanvasTransformation.transform(command, canvas)
       assert_coords_marked(canvas.bitmap, [{2, 2}, {2, 3}, {3, 2}, {3, 3}])
     end
+
+    test "a 3x3 rectangle has a 1px hole in its center" do
+      canvas = %Canvas{width: 3, height: 3}
+      command = %DrawRectangleCommand{from: {1, 1}, to: {3, 3}}
+      canvas = CanvasTransformation.transform(command, canvas)
+      assert_coords_marked(canvas.bitmap, [
+        {1, 1}, {2, 1}, {3, 1},
+        {1, 2},         {3, 2},
+        {1, 3}, {2, 3}, {3, 3},
+      ])
+    end
   end
 end

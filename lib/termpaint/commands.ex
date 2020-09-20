@@ -68,7 +68,7 @@ defmodule Termpaint.DrawLineCommand do
 end
 
 defmodule Termpaint.DrawRectangleCommand do
-  alias Termpaint.{CanvasTransformation, NilCanvasError, OutOfBoundsError, Canvas}
+  alias Termpaint.{CanvasTransformation, NilCanvasError, OutOfBoundsError, Canvas, DrawLineCommand}
 
   defstruct from: {1, 1}, to: {1, 1}
 
@@ -84,13 +84,8 @@ defmodule Termpaint.DrawRectangleCommand do
         command.from == command.to ->
           mark(canvas, command.from)
         true ->
-          {x_from, y_from} = command.from
-          {x_to, y_to} = command.to
-          canvas
-          |> mark(command.from)
-          |> mark(command.to)
-          |> mark({x_from, y_to})
-          |> mark({x_to, y_from})
+          canvas = CanvasTransformation.transform(%DrawLineCommand{from: command.from, to: command.to}, canvas)
+          CanvasTransformation.transform(%DrawLineCommand{from: command.to, to: command.from}, canvas)
       end
     end
 
