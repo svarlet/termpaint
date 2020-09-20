@@ -101,16 +101,13 @@ defmodule Termpaint.BucketFillCommand do
     def transform(_, nil), do: %NilCanvasError{}
 
     def transform(command, canvas) do
-      unless Canvas.within?(canvas, command.position) do
-        %OutOfBoundsError{}
-      else
-        if canvas.bitmap[command.position] do
-          canvas
-        else
+      cond do
+        not Canvas.within?(canvas, command.position) -> %OutOfBoundsError{}
+        canvas.bitmap[command.position] -> canvas
+        true ->
           for x <- 1..canvas.width, y <- 1..canvas.height, reduce: canvas do
             canvas -> Canvas.mark(canvas, {x, y}, command.ink)
           end
-        end
       end
     end
   end
