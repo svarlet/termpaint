@@ -106,7 +106,12 @@ defmodule Termpaint.BucketFillCommand do
         canvas.bitmap[command.position] -> canvas
         true ->
           for x <- 1..canvas.width, y <- 1..canvas.height, reduce: canvas do
-            canvas -> Canvas.mark(canvas, {x, y}, command.ink)
+            canvas ->
+              if canvas.bitmap[{x, y}] do
+                canvas
+              else
+                Canvas.mark(canvas, {x, y}, command.ink)
+              end
           end
       end
     end

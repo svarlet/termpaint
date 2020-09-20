@@ -36,21 +36,42 @@ defmodule Termpaint.BucketFillTest do
     canvas = %Canvas{width: 3, height: 3}
     command = %BucketFillCommand{position: {2, 1}, ink: "x"}
     canvas = CanvasTransformation.transform(command, canvas)
+
     assert_coords_marked(canvas.bitmap, [
       {1, 1}, {2, 1}, {3, 1},
       {1, 2}, {2, 2}, {3, 2},
-      {1, 3}, {2, 3}, {3, 3},
+      {1, 3}, {2, 3}, {3, 3}
     ])
   end
 
   test "bucket fill at a marked coordinate does not alter the canvas" do
     premarked_position = {2, 2}
+
     old_canvas =
       %Canvas{width: 3, height: 3}
       |> Canvas.mark(premarked_position, ".")
+
     new_canvas =
       %BucketFillCommand{position: premarked_position, ink: "c"}
       |> CanvasTransformation.transform(old_canvas)
+
     assert new_canvas == old_canvas
+  end
+
+  test "bucket fills the canvas except all pre-marked positions" do
+    old_canvas =
+      %Canvas{width: 3, height: 3}
+      |> Canvas.mark({3, 1}, ".")
+      |> Canvas.mark({1, 3}, ".")
+
+    new_canvas =
+      %BucketFillCommand{position: {3, 3}, ink: "c"}
+      |> CanvasTransformation.transform(old_canvas)
+
+    assert new_canvas.bitmap == %{
+      {1, 1} => "c", {2, 1} => "c", {3, 1} => ".",
+      {1, 2} => "c", {2, 2} => "c", {3, 2} => "c",
+      {1, 3} => ".", {2, 3} => "c", {3, 3} => "c"
+    }
   end
 end
