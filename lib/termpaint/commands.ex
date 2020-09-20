@@ -88,7 +88,16 @@ defmodule Termpaint.DrawRectangleCommand do
 end
 
 defmodule Termpaint.BucketFillCommand do
+  alias Termpaint.{
+    CanvasTransformation,
+    NilCanvasError
+  }
+
   defstruct position: {1, 1}, ink: "."
+
+  defimpl CanvasTransformation do
+    def transform(_, _), do: %NilCanvasError{}
+  end
 end
 
 defmodule Termpaint.QuitCommand do
