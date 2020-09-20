@@ -91,7 +91,8 @@ defmodule Termpaint.BucketFillCommand do
   alias Termpaint.{
     CanvasTransformation,
     NilCanvasError,
-    OutOfBoundsError
+    OutOfBoundsError,
+    Canvas
   }
 
   defstruct position: {1, 1}, ink: "."
@@ -99,7 +100,15 @@ defmodule Termpaint.BucketFillCommand do
   defimpl CanvasTransformation do
     def transform(_, nil), do: %NilCanvasError{}
 
-    def transform(_, _), do: %OutOfBoundsError{}
+    def transform(command, canvas) do
+      unless Canvas.within?(canvas, command.position) do
+        %OutOfBoundsError{}
+      else
+        for x <- 1..canvas.width, y <- 1..canvas.height, reduce: canvas do
+          canvas -> Canvas.mark(canvas, {x, y}, command.ink)
+        end
+      end
+    end
   end
 end
 
