@@ -19,6 +19,8 @@
 
 - Lines and Rectangles cannot be drawn beyond the boundaries of the canvas. I could have cropped the desired line or rectangle to the possible size. I could also have extended the size of the canvas to fit the line or rectangle. Choosing to treat these as errors is faster and easier to implement.
 
+- Diagonal lines are drawn as a horizontal line *and then* a vertical line. This is important because it means the lines from {1, 1} to {3, 3} and from {3, 3} to {1, 1} are not drawn identically. One will go right and then down, while the other will go left and then up. Interestingly, this means a rectangle can be drawn by drawing one line twice: once with the corners coordinates provided, and one with the swapped coordinates.
+
 ## What could be better?
 
 - A command interpreter with parsing rules registered at runtime would make it extensible without recompilation. Yet, compilation is not expensive at this stage, and we are only asked to support a small number of commands. Therefore I consider it would be overengineered at this stage.
