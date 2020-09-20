@@ -1,53 +1,43 @@
 defmodule Termpaint do
-  alias Termpaint.{Canvas, Renderer}
+  use Exceptional
 
-  import Termpaint.Parser
+  alias Termpaint.{
+    CommandInterpreter,
+    CanvasTransformation,
+    TextRenderer,
+    QuitCommand
+  }
 
   def main(_args) do
-    read_command(nil)
+    nil
+    |> Stream.unfold(&run/1)
+    |> Stream.run()
   end
 
-  def read_command(state \\ nil) do
-    command = IO.gets("enter command: ")
+  defp run(app_state) do
+    new_app_state =
+      IO.gets("enter command: ")
+      |> CommandInterpreter.parse()
+      ~> CanvasTransformation.transform(app_state)
+      ~> tee(&output/1)
 
-    state
-    |> process_command(command)
-    |> read_command()
+    if_exception(new_app_state) do
+      fn %QuitCommand{} -> System.halt()
+         _ -> {app_state, app_state}
+      end.()
+    else
+      fn _ -> {app_state, new_app_state} end.()
+    end
   end
 
-  def process_command(state, command) do
-    canvas =
-      case command do
-        "C" <> dimensions ->
-          {width, height} = parse_dimensions(dimensions)
-          Canvas.new(width, height)
-
-        "L" <> vector ->
-          {x1, y1, x2, y2} = parse_vector(vector)
-          Canvas.draw_line(state, x1, y1, x2, y2)
-
-        "R" <> vector ->
-          {x1, y1, x2, y2} = parse_vector(vector)
-          Canvas.draw_rectangle(state, x1, y1, x2, y2)
-
-        "B" <> fill_args ->
-          {x, y, ink} = parse_fill_arguments(fill_args)
-          Canvas.fill(state, x, y, ink)
-
-        "Q\n" ->
-          System.halt(0)
-      end
-
-    print_canvas(canvas)
-
-    canvas
-  end
-
-  defp print_canvas(canvas) do
-    canvas
-    |> Renderer.render_canvas()
+  defp output(app_state) do
+    app_state
+    |> TextRenderer.render()
     |> IO.write()
   end
 
-
+  defp tee(value, fun) do
+    fun.(value)
+    value
+  end
 end

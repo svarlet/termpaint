@@ -13,33 +13,14 @@
 3. Run it: `./termpaint`
 4. Have fun!
 
-## Important Note
+## Opinionated implementation
 
-This code test was requested at **extreme short notice and achieved in a few hours**, thus has severe limitations which I would address if my schedule allowed it:
-- It lacks an exhaustive error handling with regards to user inputs
-- Its performance gets really bad beyond a 1k x 1k canvas due to an effective yet poor rendering algorithm
+- Creating a 0x0 canvas is considered an error. While it's semantically valid, it's practically absurd: no other command can be performed on a 0x0 canvas (yet?).
 
-Notable errors that should be handled gracefully:
-- unsupported command
-- missing command argument
-- invalid type for a command argument
-- valid command argument but outside of canvas bounds
+- Lines and Rectangles cannot be drawn beyond the boundaries of the canvas. I could have cropped the desired line or rectangle to the possible size. I could also have extended the size of the canvas to fit the line or rectangle. Choosing to treat these as errors is faster and easier to implement.
 
-I chose not to support a 0x0 canvas. I appreciate it's debatable: what's wrong with the following?
-```
---
-||
---
-```
-Nothing, but a user won't be able to do anything in it, so I exploited the lack of clarity of the code test with regard to this edge case.
+- Diagonal lines are drawn as a horizontal line *and then* a vertical line. This is important because it means the lines from {1, 1} to {3, 3} and from {3, 3} to {1, 1} are not drawn identically. One will go right and then down, while the other will go left and then up. Interestingly, this means a rectangle can be drawn by drawing one line twice: once with the corners coordinates provided, and one with the swapped coordinates.
 
 ## What could be better?
 
-While I'm happy with the core modules like Canvas and Renderer, there are a few things I wish I had done better.
-
-First, the adapter layer, namely the termpaint module could be less coupled to the other modules or to the std library. Essentially, I should invert some dependencies. Instead of making it depend on the IO module, the Renderer module, and the Parser module, these could be configured and wired in main() and provided as a configuration argument.
-
-Second, and strongly related to the previous point, there are not enough tests testing the collaboration between the Termpoint module and its dependencies. This results in [a lot of contract tests and too few collaboration tests](https://blog.thecodewhisperer.com/permalink/integrated-tests-are-a-scam).
-
-Third, I appreciate the honourable-reviewer-of-the-test may not have Elixir installed on their computer and wish I had provided a docker file to help their inner artist reveal themselves.
-
+- A command interpreter with parsing rules registered at runtime would make it extensible without recompilation. Yet, compilation is not expensive at this stage, and we are only asked to support a small number of commands. Therefore I consider it would be overengineered at this stage.
