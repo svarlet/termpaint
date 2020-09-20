@@ -66,7 +66,13 @@ defmodule Termpaint.DrawLineCommand do
 end
 
 defmodule Termpaint.DrawRectangleCommand do
+  alias Termpaint.{CanvasTransformation, NilCanvasError}
+
   defstruct from: {1, 1}, to: {1, 1}
+
+  defimpl CanvasTransformation do
+    def transform(command, nil), do: %NilCanvasError{}
+  end
 end
 
 defmodule Termpaint.BucketFillCommand do

@@ -8,7 +8,8 @@ defmodule CanvasTransformationTest do
     Canvas,
     DrawLineCommand,
     NilCanvasError,
-    OutOfBoundsError
+    OutOfBoundsError,
+    DrawRectangleCommand
   }
 
   describe "create a canvas" do
@@ -142,6 +143,14 @@ defmodule CanvasTransformationTest do
         {1, 2} => ".", {2, 2} => "x", {3, 2} => ".",
         {1, 3} => ".", {2, 3} => "x", {3, 3} => ".",
       }
+    end
+  end
+
+  describe "drawing a rectangle" do
+    test "nil canvas" do
+      rectangle_command = %DrawRectangleCommand{from: {1, 1}, to: {3, 3}}
+      assert %NilCanvasError{} ==
+        CanvasTransformation.transform(rectangle_command, nil)
     end
   end
 end
