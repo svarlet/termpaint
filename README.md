@@ -53,4 +53,4 @@ stream - buff: 1024        0.0191 - 1.15x slower +6.90 s
 
 While the eager renderer is faster, it also consumes 2GB RAM to render a 10k x 10k matrix. A lazy (built on Streams) renderer, with buffered output is therefore a good tradeoffs. While Streams have an overhead, they only process a small amount of data at any given time, thereby limiting memory consumption at any given time. For a 10k x 10k matrix, the RAM consumed by the entire system process remained under 40MB for a 15% performance cost.
 
-This is presently an attempt and further performance improvement can be gained by optimizing the code using Streams.
+This is presently an attempt and further performance improvement can be gained by further optimizing the code using Streams. Another experiment should be to implement the bitmap of a canvas with ETS rather than a Map.
