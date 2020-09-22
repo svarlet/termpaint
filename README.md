@@ -35,3 +35,22 @@
 - Error handling is done well, but does not print an error explanation to the user (or should I say artist?). It just skips the command. Again, the error are customized according to the context, adding a little more contextual information to them is trivial, and formatting+displaying them is easy as well.
 
 - Rendering relies on Elixir IO Lists, which are [known for delivering incredible performance](https://nerdranchighq.wpengine.com/blog/elixir-and-io-lists-part-1-building-output-efficiently/) by avoiding many string concatenations and by relying on low level optimizations provided by the Beam VM. Yet, there are still a number of operations happening on Lists of pixels so the performance could probably be improved. My thought would be to use a Stream which would be extremely efficient memory wise, at the cost of CPU efficiency. The user would certainly enjoy a rendering starting earlier though (the good old "Perceived performance VS Actual performance"). As is, the program has been tested successfully with a 10k x 10k canvas (100M pixels!). 
+
+## Ongoing experiment
+
+This branch is an experiment of a Stream based renderer with buffered outputs.
+
+The benchmark is looking good:
+```
+Name                          ips        average  deviation         median         99th %
+output                     0.0220        45.38 s     ±0.00%        45.38 s        45.38 s
+stream - buff: 1024        0.0191        52.27 s     ±0.00%        52.27 s        52.27 s
+
+Comparison:
+output                     0.0220
+stream - buff: 1024        0.0191 - 1.15x slower +6.90 s
+```
+
+While the eager renderer is faster, it also consumes 2GB RAM to render a 10k x 10k matrix. A lazy (built on Streams) renderer, with buffered output is therefore a good tradeoffs. While Streams have an overhead, they only process a small amount of data at any given time, thereby limiting memory consumption at any given time. For a 10k x 10k matrix, the RAM consumed by the entire system process remained under 40MB for a 15% performance cost.
+
+This is presently an attempt and further performance improvement can be gained by optimizing the code using Streams.

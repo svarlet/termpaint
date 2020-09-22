@@ -4,6 +4,8 @@ defmodule Termpaint.TextRenderer do
   @trailing_vertical_fencing "|\n"
   @pristine_pixel " "
 
+  alias Termpaint.Canvas
+
   def render(canvas) do
     body =
       for y <- 1..canvas.height do
@@ -14,6 +16,18 @@ defmodule Termpaint.TextRenderer do
         [@vertical_fencing | List.insert_at(row, -1, @trailing_vertical_fencing)]
       end
     [header(canvas), body, footer(canvas)]
+  end
+
+  def render_as_stream(%Canvas{width: w, height: h, bitmap: bitmap}) do
+    stop_case = {1, h + 1}
+    {1, 1}
+    |> Stream.unfold(fn
+        ^stop_case -> nil
+        {^w, y} -> {{w, y}, {1, y + 1}}
+        {x, y} -> {{x, y}, {x + 1, y}}
+        end)
+    |> Stream.map(fn coord -> Map.get(bitmap, coord, " ") end)
+    |> Stream.chunk_every(w)
   end
 
   defp header(canvas) do
